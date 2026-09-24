@@ -1,0 +1,15 @@
+{
+  "name": "studyRoomFunctions",
+  "version": "1.0.0",
+  "description": "自习室云函数：房间管理 + 房间内交流（CloudBase PostgreSQL / PostgREST）",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@cloudbase/node-sdk": "^3.18.3",
+    "wx-server-sdk": "~2.4.0"
+  }
+}

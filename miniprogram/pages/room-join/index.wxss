@@ -1,0 +1,50 @@
+/**pages/room-join/index.wxss**/
+page {
+  background-color: #f6f6f6;
+}
+
+.page {
+  padding: 32rpx 24rpx;
+}
+
+.form-card {
+  background-color: #ffffff;
+  border-radius: 16rpx;
+  padding: 32rpx 28rpx;
+}
+
+.label {
+  font-size: 28rpx;
+  color: #333333;
+  margin-bottom: 16rpx;
+}
+
+.input {
+  height: 84rpx;
+  background-color: #f5f5f5;
+  border-radius: 10rpx;
+  padding: 0 24rpx;
+  font-size: 30rpx;
+  margin-bottom: 12rpx;
+}
+
+.hint {
+  font-size: 24rpx;
+  color: #999999;
+  margin-bottom: 32rpx;
+}
+
+.submit {
+  margin-top: 48rpx;
+  height: 88rpx;
+  line-height: 88rpx;
+  text-align: center;
+  border-radius: 44rpx;
+  background-color: #4a6cf7;
+  color: #ffffff;
+  font-size: 32rpx;
+}
+
+.submit.disabled {
+  opacity: 0.6;
+}

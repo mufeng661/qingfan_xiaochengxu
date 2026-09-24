@@ -1,0 +1,178 @@
+<!--index.wxml-->
+<view class="page">
+  <block wx:if="{{loggedIn}}">
+  <view class="header">
+    <view class="header-left">
+      <view class="title">自习室</view>
+      <view class="subtitle">你好，{{username}}</view>
+    </view>
+    <view class="header-actions">
+      <view class="pill pill-soft" bindtap="openJoin">
+        <text class="pill-icon">🔑</text>
+        <text>加入</text>
+      </view>
+      <view class="pill pill-solid" bindtap="openCreate">
+        <text class="pill-icon">＋</text>
+        <text>创建</text>
+      </view>
+      <view class="user-chip" bindtap="onUserTap">{{avatarSeed}}</view>
+    </view>
+  </view>
+
+  <scroll-view class="scroll" scroll-y>
+    <view class="error" wx:if="{{roomError}}">{{roomError}}</view>
+
+    <view class="section-title">我的自习室</view>
+
+    <view class="empty" wx:if="{{rooms.length === 0}}">
+      <text class="empty-icon">🏠</text>
+      <text class="empty-text">{{loading ? '加载中…' : '还没有自习室'}}</text>
+      <text class="empty-hint">点右上角「创建」新建，或「加入」输入房间号</text>
+    </view>
+
+    <view class="room-list" wx:else>
+      <view class="room-card" wx:for="{{rooms}}" wx:key="id">
+        <view class="room-row">
+          <view class="room-main">
+            <view class="room-name-row">
+              <text class="room-name">{{item.name}}</text>
+              <text class="tag tag-gold" wx:if="{{item.isOwner}}">房主</text>
+              <text class="tag tag-tomato" wx:if="{{item.need_password}}">有密码</text>
+            </view>
+            <view class="room-id-row" data-id="{{item.id}}" bindtap="copyRoomId">
+              <text class="room-id">房间号 {{item.id}}</text>
+              <text class="room-copy">复制</text>
+            </view>
+            <text class="room-meta">{{item.member_count}} 人 · {{item.timeText}}</text>
+          </view>
+          <view class="room-actions">
+            <text class="icon-btn" data-id="{{item.id}}" bindtap="openBoard">💬</text>
+            <text class="icon-btn danger" wx:if="{{item.isOwner}}" data-index="{{index}}" bindtap="askDelete">✕</text>
+            <text class="text-btn danger" wx:else data-index="{{index}}" bindtap="askLeave">退出</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <view class="bottom-space"></view>
+  </scroll-view>
+
+  <!-- 创建弹窗 -->
+  <view class="mask" wx:if="{{showCreate}}" bindtap="closeCreate">
+    <view class="modal" catchtap="noop">
+      <view class="modal-title">创建自习室</view>
+      <view class="modal-sub">起个名字，喊上好友一起学</view>
+
+      <input class="input" placeholder="房间名称" placeholder-class="ph" value="{{newName}}" bindinput="onNewName" maxlength="60" />
+
+      <view class="switch-row">
+        <text class="switch-label">设置密码</text>
+        <switch checked="{{usePwd}}" color="#6E9B57" bindchange="onUsePwd" />
+      </view>
+
+      <input wx:if="{{usePwd}}" class="input" password placeholder="房间密码" placeholder-class="ph" value="{{newPwd}}" bindinput="onNewPwd" maxlength="32" />
+
+      <view class="modal-actions">
+        <view class="btn btn-ghost" bindtap="closeCreate">取消</view>
+        <view class="btn btn-solid" bindtap="createRoom">{{creating ? '创建中…' : '创建'}}</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 加入弹窗 -->
+  <view class="mask" wx:if="{{showJoin}}" bindtap="closeJoin">
+    <view class="modal" catchtap="noop">
+      <view class="modal-title">加入自习室</view>
+      <view class="modal-sub">输入好友分享的 6 位房间号</view>
+
+      <input class="input" type="number" placeholder="6 位房间号" placeholder-class="ph" value="{{joinCode}}" bindinput="onJoinCode" maxlength="6" />
+      <input class="input" password placeholder="房间密码（没有可不填）" placeholder-class="ph" value="{{joinPwd}}" bindinput="onJoinPwd" maxlength="32" />
+
+      <view class="modal-actions">
+        <view class="btn btn-ghost" bindtap="closeJoin">取消</view>
+        <view class="btn btn-solid" bindtap="joinByCode">{{joining ? '加入中…' : '加入'}}</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 房间留言弹窗 -->
+  <view class="mask" wx:if="{{showBoard}}" bindtap="closeBoard">
+    <view class="modal modal-board" catchtap="noop">
+      <view class="board-head">
+        <view class="board-head-left">
+          <view class="modal-title">房间留言</view>
+          <view class="board-room-name">{{boardRoomName}}</view>
+        </view>
+        <text class="close-x" bindtap="closeBoard">✕</text>
+      </view>
+
+      <scroll-view class="board-scroll" scroll-y>
+        <view class="reply-bar" wx:if="{{replyToName}}">
+          <text class="reply-bar-text">回复 @{{replyToName}}</text>
+          <text class="reply-bar-cancel" bindtap="cancelReply">取消</text>
+        </view>
+
+        <view class="board-input-row">
+          <input class="board-input" placeholder="写一句留言…" placeholder-class="ph" value="{{msgInput}}" bindinput="onMsgInput" />
+          <view class="board-send" bindtap="sendMessage">{{msgSending ? '发送中…' : '发送'}}</view>
+        </view>
+
+        <input class="nickname-input" placeholder="昵称（可留空，默认匿名）" placeholder-class="ph" value="{{nickname}}" bindinput="onNicknameInput" maxlength="20" />
+
+        <view class="board-error" wx:if="{{msgError}}">{{msgError}}</view>
+
+        <view class="board-empty" wx:if="{{messages.length === 0}}">还没有留言，来说点什么吧</view>
+
+        <view class="board-list" wx:else>
+          <view class="msg" wx:for="{{messages}}" wx:key="id" style="padding-left: {{item.depth * 32}}rpx">
+            <view class="msg-avatar">{{item.avatarText}}</view>
+            <view class="msg-body">
+              <view class="msg-head">
+                <text class="msg-name">{{item.nickname}}</text>
+                <text class="msg-time">{{item.timeText}}</text>
+              </view>
+              <view class="msg-text">{{item.replyToName ? '回复 @' + item.replyToName + '：' : ''}}{{item.content}}</view>
+              <view class="msg-actions">
+                <text class="msg-action" data-index="{{index}}" bindtap="setReply">回复</text>
+                <text class="msg-action {{item.liked ? 'liked' : ''}}" data-index="{{index}}" bindtap="likeMsg">{{item.liked ? '已赞' : '赞'}} {{item.likes}}</text>
+                <text class="msg-action danger" wx:if="{{item.can_delete}}" data-index="{{index}}" bindtap="deleteMsg">删除</text>
+              </view>
+            </view>
+          </view>
+        </view>
+      </scroll-view>
+    </view>
+  </view>
+
+  <!-- 解散确认 -->
+  <view class="mask" wx:if="{{showDelete}}" bindtap="closeDelete">
+    <view class="modal modal-confirm" catchtap="noop">
+      <view class="modal-title center">解散自习室？</view>
+      <view class="confirm-text">「{{pendingDeleteName}}」及其留言将不可见。</view>
+      <view class="modal-actions">
+        <view class="btn btn-ghost" bindtap="closeDelete">取消</view>
+        <view class="btn btn-tomato" bindtap="confirmDelete">解散</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 退出确认 -->
+  <view class="mask" wx:if="{{showLeave}}" bindtap="closeLeave">
+    <view class="modal modal-confirm" catchtap="noop">
+      <view class="modal-title center">退出自习室？</view>
+      <view class="confirm-text">「{{pendingLeaveName}}」退出后可在「加入」中重新进入。</view>
+      <view class="modal-actions">
+        <view class="btn btn-ghost" bindtap="closeLeave">取消</view>
+        <view class="btn btn-tomato" bindtap="confirmLeave">退出</view>
+      </view>
+    </view>
+  </view>
+  </block>
+
+  <view class="locked" wx:else>
+    <text class="locked-icon">🔒</text>
+    <text class="locked-title">登录后使用自习室</text>
+    <text class="locked-desc">登录后可创建 / 加入自习室，与好友一起专注</text>
+    <view class="locked-btn" bindtap="goLogin">去登录</view>
+  </view>
+</view>

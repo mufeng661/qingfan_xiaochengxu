@@ -1,0 +1,290 @@
+/**pages/room/index.wxss**/
+page {
+  background-color: #f6f6f6;
+}
+
+.page {
+  padding: 24rpx 24rpx 240rpx;
+}
+
+.room-card {
+  background-color: #ffffff;
+  border-radius: 16rpx;
+  padding: 30rpx 28rpx;
+}
+
+.room-head {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+}
+
+.room-name {
+  font-size: 38rpx;
+  font-weight: 600;
+  color: #000000;
+}
+
+.tag.locked {
+  font-size: 20rpx;
+  color: #8c8c8c;
+  background-color: #f5f5f5;
+  border-radius: 6rpx;
+  padding: 2rpx 10rpx;
+}
+
+.room-sub {
+  margin-top: 14rpx;
+  font-size: 26rpx;
+  color: #666666;
+}
+
+.link {
+  color: #4a6cf7;
+  margin-left: 12rpx;
+}
+
+.members {
+  margin-top: 20rpx;
+  border-top: 2rpx solid #f0f0f0;
+  padding-top: 20rpx;
+  display: flex;
+  flex-direction: column;
+  gap: 14rpx;
+}
+
+.member {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+}
+
+.member-role {
+  font-size: 22rpx;
+  color: #666666;
+  background-color: #f5f5f5;
+  border-radius: 6rpx;
+  padding: 2rpx 12rpx;
+}
+
+.member-role.owner {
+  color: #d4380d;
+  background-color: #fff1e6;
+}
+
+.member-id {
+  font-size: 26rpx;
+  color: #999999;
+}
+
+.room-actions {
+  display: flex;
+  gap: 16rpx;
+  margin-top: 28rpx;
+}
+
+.mini-btn {
+  flex: 1;
+  margin: 0;
+  font-size: 26rpx;
+  line-height: 68rpx;
+  height: 68rpx;
+  padding: 0;
+  background-color: #eef2ff;
+  color: #4a6cf7;
+  border-radius: 34rpx;
+}
+
+.mini-btn.danger {
+  background-color: #fff1f0;
+  color: #e54545;
+}
+
+.section-title {
+  margin: 40rpx 8rpx 20rpx;
+  font-size: 30rpx;
+  font-weight: 500;
+  color: #333333;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 20rpx;
+}
+
+.item {
+  display: flex;
+  gap: 16rpx;
+  background-color: #ffffff;
+  border-radius: 12rpx;
+  padding: 24rpx;
+}
+
+.avatar {
+  flex: none;
+  width: 72rpx;
+  height: 72rpx;
+  border-radius: 50%;
+  background-color: #e8eefc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.avatar-img {
+  width: 72rpx;
+  height: 72rpx;
+}
+
+.avatar-text {
+  font-size: 24rpx;
+  color: #4a6cf7;
+  padding: 0 6rpx;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.body {
+  flex: 1;
+  min-width: 0;
+}
+
+.head {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  margin-bottom: 8rpx;
+}
+
+.nickname {
+  font-size: 28rpx;
+  font-weight: 500;
+  color: #000000;
+}
+
+.role {
+  font-size: 20rpx;
+  border-radius: 6rpx;
+  padding: 2rpx 10rpx;
+}
+
+.role-admin {
+  color: #d4380d;
+  background-color: #fff1e6;
+}
+
+.role-user {
+  color: #1d39c4;
+  background-color: #f0f5ff;
+}
+
+.role-visitor {
+  color: #8c8c8c;
+  background-color: #f5f5f5;
+}
+
+.text {
+  font-size: 30rpx;
+  color: #333333;
+  line-height: 1.5;
+  word-break: break-all;
+  white-space: pre-wrap;
+}
+
+.reply-to {
+  color: #4a6cf7;
+}
+
+.meta {
+  margin-top: 12rpx;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.time {
+  font-size: 22rpx;
+  color: #999999;
+}
+
+.actions {
+  display: flex;
+  gap: 32rpx;
+}
+
+.action {
+  font-size: 24rpx;
+  color: #666666;
+}
+
+.action.liked {
+  color: #e54545;
+}
+
+.action.delete {
+  color: #e54545;
+}
+
+.tip {
+  text-align: center;
+  color: #999999;
+  font-size: 26rpx;
+  padding: 40rpx 0;
+}
+
+.footer {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ffffff;
+  border-top: 2rpx solid #ececec;
+  padding: 16rpx 24rpx calc(16rpx + env(safe-area-inset-bottom));
+}
+
+.reply-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 24rpx;
+  color: #4a6cf7;
+  margin-bottom: 12rpx;
+}
+
+.reply-cancel {
+  color: #999999;
+}
+
+.nickname-input {
+  height: 64rpx;
+  background-color: #f5f5f5;
+  border-radius: 8rpx;
+  padding: 0 20rpx;
+  font-size: 26rpx;
+  margin-bottom: 12rpx;
+}
+
+.input-row {
+  display: flex;
+  align-items: flex-end;
+  gap: 16rpx;
+}
+
+.content-input {
+  flex: 1;
+  min-height: 72rpx;
+  max-height: 240rpx;
+  background-color: #f5f5f5;
+  border-radius: 8rpx;
+  padding: 16rpx 20rpx;
+  font-size: 28rpx;
+  box-sizing: border-box;
+}
+
+.submit-btn {
+  flex: none;
+  margin: 0;
+}

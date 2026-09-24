@@ -1,0 +1,27 @@
+<!--pages/room-join/index.wxml-->
+<view class="page">
+  <view class="form-card">
+    <view class="label">房间号</view>
+    <input
+      class="input"
+      placeholder="粘贴或输入房间号"
+      value="{{roomId}}"
+      bindinput="onRoomIdInput"
+    />
+    <view class="hint">房间号由房主分享给你，通常在邀请链接里</view>
+
+    <view class="label">房间密码（如需）</view>
+    <input
+      class="input"
+      placeholder="房间未设密码可留空"
+      value="{{password}}"
+      bindinput="onPasswordInput"
+      password
+      maxlength="32"
+    />
+  </view>
+
+  <view class="submit {{submitting ? 'disabled' : ''}}" bindtap="submit">
+    {{submitting ? '加入中...' : '加入房间'}}
+  </view>
+</view>

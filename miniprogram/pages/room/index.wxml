@@ -1,0 +1,86 @@
+<!--pages/room/index.wxml-->
+<view class="page">
+  <view class="room-card" wx:if="{{room}}">
+    <view class="room-head">
+      <view class="room-name">{{room.name}}</view>
+      <view class="tag locked" wx:if="{{room.need_password}}">有密码</view>
+    </view>
+    <view class="room-sub" bindtap="toggleMembers">
+      {{room.member_count}} 位成员
+      <text class="link">查看成员</text>
+    </view>
+
+    <view class="members" wx:if="{{showMembers}}">
+      <view class="member" wx:for="{{members}}" wx:key="user_id">
+        <text class="member-role {{item.role === 'owner' ? 'owner' : ''}}">{{item.roleText}}</text>
+        <text class="member-id">用户 …{{item.shortId}}</text>
+      </view>
+    </view>
+
+    <view class="room-actions">
+      <button class="mini-btn" open-type="share">邀请同学</button>
+      <button class="mini-btn" bindtap="copyRoomId">复制房间号</button>
+      <button class="mini-btn danger" wx:if="{{isOwner}}" bindtap="deleteRoom">解散房间</button>
+      <button class="mini-btn" wx:else bindtap="leaveRoom">退出房间</button>
+    </view>
+  </view>
+
+  <view class="section-title">房间交流</view>
+
+  <view class="list">
+    <view class="item" wx:for="{{list}}" wx:key="id" style="padding-left: {{item.depth * 40}}rpx">
+      <view class="avatar">
+        <image wx:if="{{item.avatar}}" class="avatar-img" src="{{item.avatar}}" mode="aspectFill"></image>
+        <text wx:else class="avatar-text">{{item.nickname}}</text>
+      </view>
+      <view class="body">
+        <view class="head">
+          <text class="nickname">{{item.nickname}}</text>
+          <text class="role {{item.roleClass}}">{{item.role}}</text>
+        </view>
+        <view class="text">
+          <text wx:if="{{item.reply_to_name}}" class="reply-to">回复 @{{item.reply_to_name}}：</text>{{item.content}}
+        </view>
+        <view class="meta">
+          <text class="time">{{item.timeText}}</text>
+          <view class="actions">
+            <text class="action" data-index="{{index}}" bindtap="onReply">回复</text>
+            <text class="action {{item.liked ? 'liked' : ''}}" data-index="{{index}}" bindtap="onLike">{{item.liked ? '已赞' : '赞'}} {{item.likes}}</text>
+            <text class="action delete" wx:if="{{item.can_delete}}" data-index="{{index}}" bindtap="onDelete">删除</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <view class="tip" wx:if="{{!list.length && !loading}}">还没有交流，发一条打个招呼吧～</view>
+    <view class="tip" wx:if="{{loading}}">加载中...</view>
+    <view class="tip" wx:if="{{list.length && !hasMore && !loading}}">没有更多了</view>
+  </view>
+
+  <view class="footer">
+    <view class="reply-bar" wx:if="{{replyTo}}">
+      <text>回复 @{{replyTo.nickname}}</text>
+      <text class="reply-cancel" bindtap="cancelReply">取消</text>
+    </view>
+    <input
+      class="nickname-input"
+      placeholder="昵称（可留空，默认匿名）"
+      value="{{nickname}}"
+      bindinput="onNicknameInput"
+      maxlength="20"
+    />
+    <view class="input-row">
+      <textarea
+        class="content-input"
+        placeholder="{{replyTo ? '回复 ' + replyTo.nickname : '和大家说点什么...'}}"
+        value="{{content}}"
+        bindinput="onContentInput"
+        maxlength="500"
+        auto-height
+      />
+      <button class="submit-btn" size="mini" type="primary" bindtap="submit" disabled="{{submitting}}">
+        {{submitting ? '发送中' : '发送'}}
+      </button>
+    </view>
+  </view>
+</view>

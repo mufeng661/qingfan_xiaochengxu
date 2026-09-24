@@ -1,0 +1,51 @@
+<!--pages/login/index.wxml-->
+<view class="page">
+  <view class="brand">
+    <text class="logo">🍅</text>
+    <text class="brand-name">青番</text>
+    <text class="brand-sub">QINGFAN · AI POMODORO</text>
+  </view>
+
+  <view class="panel">
+    <view class="tabs">
+      <view class="tab {{mode === 'login' ? 'active' : ''}}" data-mode="login" bindtap="switchMode">登录</view>
+      <view class="tab {{mode === 'register' ? 'active' : ''}}" data-mode="register" bindtap="switchMode">注册</view>
+    </view>
+
+    <block wx:if="{{mode === 'login'}}">
+      <view class="field">
+        <text class="prefix">+86</text>
+        <input class="field-input" type="number" placeholder="手机号" placeholder-class="ph" value="{{phone}}" bindinput="onPhone" maxlength="20" />
+      </view>
+      <view class="field">
+        <input class="field-input" password placeholder="密码" placeholder-class="ph" value="{{password}}" bindinput="onPassword" maxlength="20" />
+      </view>
+      <view class="submit" bindtap="doLogin">{{loading ? '登录中…' : '登录'}}</view>
+      <view class="tip">演示账号：13800008888 · 密码 123456</view>
+    </block>
+
+    <block wx:else>
+      <view class="field">
+        <input class="field-input" placeholder="用户名" placeholder-class="ph" value="{{username}}" bindinput="onUsername" maxlength="20" />
+      </view>
+      <view class="field">
+        <text class="prefix">+86</text>
+        <input class="field-input" type="number" placeholder="手机号" placeholder-class="ph" value="{{phone}}" bindinput="onPhone" maxlength="20" />
+      </view>
+      <view class="field">
+        <input class="field-input" password placeholder="密码（至少 6 位）" placeholder-class="ph" value="{{password}}" bindinput="onPassword" maxlength="20" />
+      </view>
+      <view class="field">
+        <input class="field-input" password placeholder="确认密码" placeholder-class="ph" value="{{confirmPwd}}" bindinput="onConfirm" maxlength="20" />
+      </view>
+      <view class="field">
+        <input class="field-input code-input" type="number" placeholder="验证码" placeholder-class="ph" value="{{code}}" bindinput="onCode" maxlength="6" />
+        <text class="code-btn {{sending ? 'disabled' : ''}}" bindtap="sendCode">{{sending ? countdown + 's' : '获取验证码'}}</text>
+      </view>
+      <view class="submit" bindtap="doRegister">{{loading ? '注册中…' : '注册'}}</view>
+      <view class="tip">演示验证码：1234</view>
+    </block>
+
+    <view class="agree">登录即代表同意《用户协议》与《隐私政策》</view>
+  </view>
+</view>

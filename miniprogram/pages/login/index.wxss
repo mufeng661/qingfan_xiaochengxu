@@ -1,0 +1,140 @@
+/**pages/login/index.wxss**/
+page {
+  height: 100%;
+}
+
+.page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background: linear-gradient(180deg, #f7faf2 0%, #eaf1e2 100%);
+  box-sizing: border-box;
+  padding-top: env(safe-area-inset-top);
+}
+
+.brand {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding-top: 80rpx;
+}
+
+.logo {
+  font-size: 128rpx;
+  line-height: 1;
+}
+
+.brand-name {
+  font-family: serif;
+  font-size: 60rpx;
+  color: #2c3a28;
+  letter-spacing: 3rpx;
+  margin-top: 16rpx;
+}
+
+.brand-sub {
+  font-size: 22rpx;
+  color: #b4bfae;
+  letter-spacing: 6rpx;
+  margin-top: 14rpx;
+}
+
+.panel {
+  padding: 0 68rpx calc(80rpx + env(safe-area-inset-bottom));
+}
+
+.tabs {
+  display: flex;
+  padding: 8rpx;
+  border-radius: 28rpx;
+  background-color: #eaf1e2;
+  margin-bottom: 32rpx;
+}
+
+.tab {
+  flex: 1;
+  height: 80rpx;
+  line-height: 80rpx;
+  text-align: center;
+  font-size: 27rpx;
+  color: #84917d;
+  border-radius: 22rpx;
+}
+
+.tab.active {
+  color: #4c7a3e;
+  font-weight: bold;
+  background-color: #ffffff;
+}
+
+.field {
+  display: flex;
+  align-items: center;
+  height: 100rpx;
+  padding: 0 32rpx;
+  background-color: #ffffff;
+  border: 2rpx solid #e3e9db;
+  border-radius: 28rpx;
+  margin-top: 24rpx;
+  box-sizing: border-box;
+}
+
+.prefix {
+  font-size: 26rpx;
+  color: #b4bfae;
+  margin-right: 16rpx;
+}
+
+.field-input {
+  flex: 1;
+  font-size: 30rpx;
+  color: #2c3a28;
+}
+
+.ph {
+  color: #b4bfae;
+}
+
+.code-input {
+  letter-spacing: 6rpx;
+}
+
+.code-btn {
+  font-size: 24rpx;
+  color: #4c7a3e;
+  padding-left: 20rpx;
+}
+
+.code-btn.disabled {
+  color: #b4bfae;
+}
+
+.submit {
+  height: 100rpx;
+  line-height: 100rpx;
+  text-align: center;
+  border-radius: 28rpx;
+  background-color: #6e9b57;
+  color: #ffffff;
+  font-size: 30rpx;
+  font-weight: bold;
+  letter-spacing: 8rpx;
+  margin-top: 36rpx;
+  box-shadow: 0 16rpx 36rpx rgba(110, 155, 87, 0.32);
+}
+
+.tip {
+  font-size: 22rpx;
+  color: #b4bfae;
+  text-align: center;
+  margin-top: 16rpx;
+}
+
+.agree {
+  font-size: 22rpx;
+  color: #b4bfae;
+  text-align: center;
+  margin-top: 28rpx;
+}

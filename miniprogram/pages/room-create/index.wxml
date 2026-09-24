@@ -1,0 +1,33 @@
+<!--pages/room-create/index.wxml-->
+<view class="page">
+  <view class="form-card">
+    <view class="label">房间名称</view>
+    <input
+      class="input"
+      placeholder="例如：考研冲刺自习室"
+      value="{{name}}"
+      bindinput="onNameInput"
+      maxlength="60"
+    />
+
+    <view class="switch-row">
+      <view class="label no-margin">设置房间密码</view>
+      <switch checked="{{usePassword}}" color="#4a6cf7" bindchange="togglePassword" />
+    </view>
+    <view class="hint">开启后，加入房间需要输入密码</view>
+
+    <input
+      wx:if="{{usePassword}}"
+      class="input"
+      placeholder="请输入房间密码"
+      value="{{password}}"
+      bindinput="onPasswordInput"
+      password
+      maxlength="32"
+    />
+  </view>
+
+  <view class="submit {{submitting ? 'disabled' : ''}}" bindtap="submit">
+    {{submitting ? '创建中...' : '创建房间'}}
+  </view>
+</view>
