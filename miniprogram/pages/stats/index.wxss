@@ -1,0 +1,32 @@
+/**pages/stats/index.wxss**/
+page {
+  background-color: #f3f6ee;
+}
+
+.page {
+  min-height: calc(100vh - 110rpx - env(safe-area-inset-bottom));
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 0 60rpx;
+  box-sizing: border-box;
+}
+
+.ph-icon {
+  font-size: 120rpx;
+}
+
+.ph-title {
+  font-family: serif;
+  font-size: 44rpx;
+  color: #2c3a28;
+  margin-top: 28rpx;
+}
+
+.ph-desc {
+  font-size: 26rpx;
+  color: #84917d;
+  margin-top: 16rpx;
+  text-align: center;
+}

@@ -1,0 +1,302 @@
+/**pages/focus/index.wxss**/
+page {
+  height: 100%;
+}
+
+.page {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  box-sizing: border-box;
+}
+
+.top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 60rpx 48rpx 0;
+}
+
+.top-left {
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+  flex: 1;
+  min-width: 0;
+}
+
+.top-icon {
+  width: 68rpx;
+  height: 68rpx;
+  border-radius: 22rpx;
+  background-color: rgba(255, 255, 255, 0.28);
+  font-size: 36rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.top-text {
+  flex: 1;
+  min-width: 0;
+}
+
+.top-sub {
+  font-size: 22rpx;
+}
+
+.top-title {
+  font-size: 32rpx;
+  font-weight: 500;
+  margin-top: 4rpx;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.top-right {
+  font-size: 22rpx;
+  flex: none;
+  padding-left: 16rpx;
+}
+
+.center {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.ring-wrap {
+  position: relative;
+  width: 440rpx;
+  height: 440rpx;
+}
+
+.ring-canvas {
+  width: 440rpx;
+  height: 440rpx;
+}
+
+.ring-center {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 440rpx;
+  height: 440rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.time {
+  font-family: serif;
+  font-size: 100rpx;
+  letter-spacing: 4rpx;
+}
+
+.status {
+  font-size: 24rpx;
+  margin-top: 12rpx;
+}
+
+.dur-row {
+  display: flex;
+  gap: 16rpx;
+  margin-top: 44rpx;
+}
+
+.dur-pill {
+  font-size: 25rpx;
+  color: #ffffff;
+  padding: 10rpx 28rpx;
+  border-radius: 198rpx;
+  background-color: rgba(255, 255, 255, 0.22);
+}
+
+.dur-pill.active {
+  background-color: rgba(255, 255, 255, 0.9);
+  color: #3a3328;
+  font-weight: bold;
+}
+
+.toggle {
+  margin-top: 44rpx;
+  padding: 26rpx 80rpx;
+  border-radius: 198rpx;
+  background-color: rgba(255, 255, 255, 0.92);
+  color: #c9604f;
+  font-size: 32rpx;
+  font-weight: bold;
+  box-shadow: 0 16rpx 40rpx rgba(0, 0, 0, 0.15);
+}
+
+.bottom {
+  padding: 0 48rpx 60rpx;
+}
+
+.bottom-label {
+  font-size: 24rpx;
+  margin: 24rpx 0 16rpx;
+}
+
+.bg-row {
+  display: flex;
+  gap: 20rpx;
+}
+
+.bg-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.bg-swatch {
+  width: 100%;
+  height: 88rpx;
+  border-radius: 24rpx;
+  border: 4rpx solid rgba(255, 255, 255, 0.25);
+  box-sizing: border-box;
+}
+
+.bg-name {
+  font-size: 22rpx;
+  margin-top: 10rpx;
+}
+
+.noise-row {
+  display: flex;
+  gap: 16rpx;
+}
+
+.noise-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8rpx;
+  padding: 20rpx 0;
+  border-radius: 24rpx;
+  background-color: rgba(255, 255, 255, 0.12);
+  border: 2rpx solid transparent;
+}
+
+.noise-item.active {
+  background-color: rgba(255, 255, 255, 0.28);
+  border-color: rgba(255, 255, 255, 0.6);
+}
+
+.noise-icon {
+  font-size: 36rpx;
+}
+
+.noise-name {
+  font-size: 22rpx;
+}
+
+.exit-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 40rpx;
+}
+
+.exit {
+  font-size: 26rpx;
+}
+
+.skip {
+  font-size: 22rpx;
+  opacity: 0.6;
+}
+
+/* 弹窗 */
+.mask {
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  background-color: rgba(30, 40, 26, 0.42);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal {
+  width: 572rpx;
+  padding: 44rpx;
+  background-color: #ffffff;
+  border-radius: 44rpx;
+  box-sizing: border-box;
+}
+
+.modal-title {
+  font-family: serif;
+  font-size: 34rpx;
+  color: #2c3a28;
+  text-align: center;
+}
+
+.modal-sub {
+  font-size: 25rpx;
+  color: #84917d;
+  line-height: 44rpx;
+  text-align: center;
+  margin-top: 16rpx;
+}
+
+.reason-label {
+  font-size: 24rpx;
+  color: #84917d;
+  margin: 28rpx 0 12rpx;
+}
+
+.reason-wrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16rpx;
+}
+
+.reason {
+  font-size: 24rpx;
+  color: #4c7a3e;
+  background-color: #eaf1e2;
+  border-radius: 198rpx;
+  padding: 12rpx 24rpx;
+}
+
+.reason.active {
+  color: #ffffff;
+  background-color: #6e9b57;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 20rpx;
+  margin-top: 36rpx;
+}
+
+.btn {
+  flex: 1;
+  height: 88rpx;
+  line-height: 88rpx;
+  text-align: center;
+  border-radius: 24rpx;
+  font-size: 28rpx;
+}
+
+.btn-ghost {
+  color: #84917d;
+  border: 2rpx solid #e3e9db;
+}
+
+.btn-tomato {
+  color: #ffffff;
+  font-weight: 500;
+  background-color: #e07a5f;
+}

@@ -14,11 +14,12 @@ CREATE TABLE IF NOT EXISTS rooms_self (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE IF NOT EXISTS room_members_self (
-  id        BIGINT       NOT NULL AUTO_INCREMENT,
-  room_id   CHAR(6)      NOT NULL,
-  user_id   VARCHAR(128) NOT NULL,
-  role      VARCHAR(20)  NOT NULL DEFAULT 'member',
-  joined_at BIGINT       NULL,
+  id             BIGINT       NOT NULL AUTO_INCREMENT,
+  room_id        CHAR(6)      NOT NULL,
+  user_id        VARCHAR(128) NOT NULL,
+  role           VARCHAR(20)  NOT NULL DEFAULT 'member',
+  joined_at      BIGINT       NULL,
+  last_active_at BIGINT       NULL,
   PRIMARY KEY (id),
   UNIQUE KEY uk_room_user (room_id, user_id),
   KEY idx_members_user (user_id)

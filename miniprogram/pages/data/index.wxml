@@ -1,0 +1,6 @@
+<!--pages/data/index.wxml-->
+<view class="page">
+  <view class="ph-icon">📊</view>
+  <view class="ph-title">数据</view>
+  <view class="ph-desc">专注数据统计将在这里展示，敬请期待</view>
+</view>

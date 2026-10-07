@@ -7,6 +7,7 @@ const { now, ok, fail, toPositiveInt, isValidRoomId, resolveRole, roleAdmin } = 
 const DEFAULT_PAGE_SIZE = 20;
 const MAX_PAGE_SIZE = 100;
 const MAX_CONTENT_LENGTH = 1000;
+const ONLINE_WINDOW_MS = 5 * 60 * 1000;
 
 function dbError(error) {
   const message = error && (error.message || error.error_description || error.error || error.details);
@@ -92,6 +93,17 @@ async function isMember(roomId, userId) {
   return rows.length > 0;
 }
 
+async function touchActive(roomId, userId) {
+  if (!roomId || !userId) return;
+  await run(
+    db
+      .from("room_members_self")
+      .update({ last_active_at: now() })
+      .eq("room_id", roomId)
+      .eq("user_id", userId)
+  );
+}
+
 async function generateRoomId() {
   for (let i = 0; i < 20; i++) {
     const roomNo = String(Math.floor(100000 + Math.random() * 900000));
@@ -139,7 +151,7 @@ async function roomCreate(params, ctx) {
 
   await run(
     db.from("room_members_self").insert([
-      { room_id: roomId, user_id: userId, role: "owner", joined_at: timestamp },
+      { room_id: roomId, user_id: userId, role: "owner", joined_at: timestamp, last_active_at: timestamp },
     ])
   );
 
@@ -183,9 +195,11 @@ async function roomJoin(params, ctx) {
   if (!existing.length) {
     await run(
       db.from("room_members_self").insert([
-        { room_id: roomId, user_id: userId, role: "member", joined_at: now() },
+        { room_id: roomId, user_id: userId, role: "member", joined_at: now(), last_active_at: now() },
       ])
     );
+  } else {
+    await touchActive(roomId, userId);
   }
 
   const role = existing.length ? existing[0].role : "member";
@@ -214,12 +228,17 @@ async function roomListMine(params, ctx) {
       .eq("is_deleted", 0)
   );
   const memberRows = await selectRows(
-    db.from("room_members_self").select("room_id").in("room_id", roomIds)
+    db.from("room_members_self").select("room_id,last_active_at").in("room_id", roomIds)
   );
 
+  const threshold = now() - ONLINE_WINDOW_MS;
   const counts = {};
+  const online = {};
   memberRows.forEach((row) => {
     counts[row.room_id] = (counts[row.room_id] || 0) + 1;
+    if (row.last_active_at && Number(row.last_active_at) >= threshold) {
+      online[row.room_id] = (online[row.room_id] || 0) + 1;
+    }
   });
   const roleByRoom = {};
   memberships.forEach((item) => {
@@ -234,7 +253,11 @@ async function roomListMine(params, ctx) {
     .map((id) => {
       const room = roomById[id];
       if (!room) return null;
-      return publicRoom(room, { role: roleByRoom[id] || "member", member_count: counts[id] || 0 });
+      return publicRoom(room, {
+        role: roleByRoom[id] || "member",
+        member_count: counts[id] || 0,
+        online_count: online[id] || 0,
+      });
     })
     .filter(Boolean);
 
@@ -253,15 +276,27 @@ async function roomGet(params, ctx) {
   const members = await selectRows(
     db
       .from("room_members_self")
-      .select("user_id,role,joined_at")
+      .select("user_id,role,joined_at,last_active_at")
       .eq("room_id", roomId)
       .order("joined_at", { ascending: true })
   );
   const mine = members.find((item) => item.user_id === userId);
   if (!mine) return fail("你不是该房间成员", "NOT_MEMBER");
 
+  await touchActive(roomId, userId);
+
+  const threshold = now() - ONLINE_WINDOW_MS;
+  const onlineCount = members.filter(
+    (item) => item.last_active_at && Number(item.last_active_at) >= threshold
+  ).length;
+
   return ok(
-    publicRoom(room, { role: mine.role, member_count: members.length, members })
+    publicRoom(room, {
+      role: mine.role,
+      member_count: members.length,
+      online_count: onlineCount,
+      members,
+    })
   );
 }
 
@@ -303,6 +338,7 @@ async function commentList(params, ctx) {
   const roomId = String(params.roomId || "").trim();
   if (!isValidRoomId(roomId)) return fail("房间号不正确", "INVALID_ROOM_ID");
   if (!(await isMember(roomId, userId))) return fail("你不是该房间成员", "NOT_MEMBER");
+  await touchActive(roomId, userId);
 
   const page = toPositiveInt(params.page, 1);
   const pageSize = Math.min(MAX_PAGE_SIZE, toPositiveInt(params.pageSize, DEFAULT_PAGE_SIZE));
@@ -352,6 +388,7 @@ async function commentAdd(params, ctx) {
   const roomId = String(params.roomId || "").trim();
   if (!isValidRoomId(roomId)) return fail("房间号不正确", "INVALID_ROOM_ID");
   if (!(await isMember(roomId, userId))) return fail("你不是该房间成员", "NOT_MEMBER");
+  await touchActive(roomId, userId);
 
   const content = String(params.content || "").trim();
   if (!content) return fail("留言内容不能为空", "EMPTY_CONTENT");

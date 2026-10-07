@@ -1,0 +1,165 @@
+/**pages/me/index.wxss**/
+page {
+  background-color: #f3f6ee;
+}
+
+.page {
+  min-height: calc(100vh - 110rpx - env(safe-area-inset-bottom));
+  padding: 40rpx 44rpx calc(40rpx + 110rpx);
+  box-sizing: border-box;
+}
+
+.profile {
+  display: flex;
+  align-items: center;
+  gap: 24rpx;
+}
+
+.avatar {
+  width: 120rpx;
+  height: 120rpx;
+  border-radius: 60rpx;
+  background-color: #6e9b57;
+  color: #ffffff;
+  font-size: 52rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+}
+
+.avatar.guest {
+  background-color: #dce8cf;
+  color: #4c7a3e;
+}
+
+.profile-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.nickname {
+  font-family: serif;
+  font-size: 40rpx;
+  color: #2c3a28;
+}
+
+.phone {
+  font-size: 24rpx;
+  color: #84917d;
+  margin-top: 8rpx;
+}
+
+.login-btn {
+  padding: 18rpx 32rpx;
+  border-radius: 198rpx;
+  background-color: #6e9b57;
+  color: #ffffff;
+  font-size: 26rpx;
+  font-weight: 500;
+  flex: none;
+}
+
+.level-card {
+  margin-top: 32rpx;
+  padding: 28rpx 32rpx;
+  background-color: #ffffff;
+  border: 2rpx solid #e3e9db;
+  border-radius: 28rpx;
+}
+
+.level-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 26rpx;
+  color: #2c3a28;
+}
+
+.level-exp {
+  color: #b4bfae;
+}
+
+.bar {
+  margin-top: 16rpx;
+  height: 14rpx;
+  border-radius: 198rpx;
+  background-color: #eaf1e2;
+  overflow: hidden;
+}
+
+.bar-fill {
+  height: 14rpx;
+  border-radius: 198rpx;
+  background-color: #6e9b57;
+}
+
+.stats-card {
+  margin-top: 24rpx;
+  display: flex;
+  padding: 32rpx 0;
+  background-color: #ffffff;
+  border: 2rpx solid #e3e9db;
+  border-radius: 28rpx;
+}
+
+.stat {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.stat-val {
+  font-family: serif;
+  font-size: 42rpx;
+  color: #2c3a28;
+}
+
+.stat-label {
+  font-size: 22rpx;
+  color: #84917d;
+  margin-top: 8rpx;
+}
+
+.menu {
+  margin-top: 24rpx;
+  background-color: #ffffff;
+  border: 2rpx solid #e3e9db;
+  border-radius: 28rpx;
+  overflow: hidden;
+}
+
+.menu-item {
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+  padding: 32rpx;
+  border-bottom: 2rpx solid #eef3e8;
+}
+
+.menu-icon {
+  font-size: 36rpx;
+}
+
+.menu-text {
+  flex: 1;
+  font-size: 29rpx;
+  color: #2c3a28;
+}
+
+.menu-arrow {
+  font-size: 36rpx;
+  color: #b4bfae;
+}
+
+.logout {
+  margin-top: 40rpx;
+  height: 92rpx;
+  line-height: 92rpx;
+  text-align: center;
+  border-radius: 28rpx;
+  background-color: #ffffff;
+  border: 2rpx solid #e3e9db;
+  color: #e07a5f;
+  font-size: 28rpx;
+}

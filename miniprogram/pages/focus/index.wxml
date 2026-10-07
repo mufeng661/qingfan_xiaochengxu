@@ -1,0 +1,94 @@
+<!--pages/focus/index.wxml-->
+<view class="page" style="background: linear-gradient(160deg, {{bgFrom}} 0%, {{bgTo}} 100%); color: {{ink}};">
+  <view class="top">
+    <view class="top-left">
+      <view class="top-icon">🍅</view>
+      <view class="top-text">
+        <view class="top-sub" style="color: {{dim}}">正在专注</view>
+        <view class="top-title" style="color: {{ink}}">{{taskTitle}}</view>
+      </view>
+    </view>
+    <view class="top-right" style="color: {{dim}}">第 {{pomodoroNo}} 个番茄</view>
+  </view>
+
+  <view class="center">
+    <view class="ring-wrap">
+      <canvas type="2d" id="ring" class="ring-canvas"></canvas>
+      <view class="ring-center">
+        <view class="time" style="color: {{ink}}">{{timeText}}</view>
+        <view class="status" style="color: {{dim}}">{{statusText}}</view>
+      </view>
+    </view>
+
+    <view class="dur-row">
+      <view
+        class="dur-pill {{durationSec === item * 60 ? 'active' : ''}}"
+        wx:for="{{durations}}"
+        wx:key="*this"
+        data-d="{{item}}"
+        bindtap="applyDuration"
+      >{{item}} 分</view>
+    </view>
+
+    <view class="toggle" bindtap="toggleTimer">
+      <text>{{running ? '⏸ 暂停' : '▶ 开始专注'}}</text>
+    </view>
+  </view>
+
+  <view class="bottom">
+    <view class="bottom-label" style="color: {{dim}}">专注背景</view>
+    <view class="bg-row">
+      <view
+        class="bg-item"
+        wx:for="{{backgrounds}}"
+        wx:key="key"
+        data-key="{{item.key}}"
+        bindtap="pickBg"
+      >
+        <view class="bg-swatch" style="background: linear-gradient(160deg, {{item.from}}, {{item.to}}); {{bgKey === item.key ? 'border-color:#FFFFFF;' : ''}}"></view>
+        <view class="bg-name" style="color: {{dim}}">{{item.name}}</view>
+      </view>
+    </view>
+
+    <view class="bottom-label" style="color: {{dim}}">白噪音</view>
+    <view class="noise-row">
+      <view
+        class="noise-item {{noiseKey === item.key ? 'active' : ''}}"
+        wx:for="{{noises}}"
+        wx:key="key"
+        data-key="{{item.key}}"
+        bindtap="pickNoise"
+      >
+        <text class="noise-icon">{{item.icon}}</text>
+        <text class="noise-name" style="color: {{ink}}">{{item.name}}</text>
+      </view>
+    </view>
+
+    <view class="exit-row">
+      <view class="exit" style="color: {{dim}}" bindtap="requestExit">🚪 提前退出</view>
+      <view class="skip" style="color: {{dim}}" bindtap="demoFinish">演示：快进到完成</view>
+    </view>
+  </view>
+
+  <!-- 提前退出 -->
+  <view class="mask" wx:if="{{showQuit}}" bindtap="closeQuit">
+    <view class="modal" catchtap="noop">
+      <view class="modal-title">要放弃这次专注吗？</view>
+      <view class="modal-sub">本次已专注 {{timeText}}，提前退出将不计入完整番茄。</view>
+      <view class="reason-label">提前退出原因</view>
+      <view class="reason-wrap">
+        <view
+          class="reason {{quitReason === item ? 'active' : ''}}"
+          wx:for="{{reasons}}"
+          wx:key="*this"
+          data-r="{{item}}"
+          bindtap="pickReason"
+        >{{item}}</view>
+      </view>
+      <view class="modal-actions">
+        <view class="btn btn-ghost" bindtap="closeQuit">继续专注</view>
+        <view class="btn btn-tomato" bindtap="confirmExit">退出</view>
+      </view>
+    </view>
+  </view>
+</view>

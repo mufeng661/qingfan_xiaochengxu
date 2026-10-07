@@ -1,17 +1,36 @@
 {
   "pages": [
+    "pages/home/index",
     "pages/index/index",
+    "pages/stats/index",
+    "pages/data/index",
+    "pages/me/index",
     "pages/login/index",
+    "pages/focus/index",
+    "pages/complete/index",
     "pages/room/index",
     "pages/room-create/index",
     "pages/room-join/index",
     "pages/example/index"
   ],
+  "tabBar": {
+    "custom": true,
+    "color": "#B4BFAE",
+    "selectedColor": "#4C7A3E",
+    "backgroundColor": "#FFFFFF",
+    "list": [
+      { "pagePath": "pages/home/index", "text": "今日" },
+      { "pagePath": "pages/index/index", "text": "自习室" },
+      { "pagePath": "pages/stats/index", "text": "时间轴" },
+      { "pagePath": "pages/data/index", "text": "数据" },
+      { "pagePath": "pages/me/index", "text": "我的" }
+    ]
+  },
   "window": {
-    "backgroundColor": "#F6F6F6",
+    "backgroundColor": "#F3F6EE",
     "backgroundTextStyle": "light",
-    "navigationBarBackgroundColor": "#F6F6F6",
-    "navigationBarTitleText": "自习室",
+    "navigationBarBackgroundColor": "#F3F6EE",
+    "navigationBarTitleText": "青番",
     "navigationBarTextStyle": "black"
   },
   "sitemapLocation": "sitemap.json",

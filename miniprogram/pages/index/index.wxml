@@ -43,7 +43,7 @@
               <text class="room-id">房间号 {{item.id}}</text>
               <text class="room-copy">复制</text>
             </view>
-            <text class="room-meta">{{item.member_count}} 人 · {{item.timeText}}</text>
+            <text class="room-meta">在线 {{item.online_count}} · 共 {{item.member_count}} 人 · {{item.timeText}}</text>
           </view>
           <view class="room-actions">
             <text class="icon-btn" data-id="{{item.id}}" bindtap="openBoard">💬</text>
@@ -101,7 +101,7 @@
       <view class="board-head">
         <view class="board-head-left">
           <view class="modal-title">房间留言</view>
-          <view class="board-room-name">{{boardRoomName}}</view>
+          <view class="board-room-name">{{boardRoomName}} · 在线 {{boardOnline}}</view>
         </view>
         <text class="close-x" bindtap="closeBoard">✕</text>
       </view>

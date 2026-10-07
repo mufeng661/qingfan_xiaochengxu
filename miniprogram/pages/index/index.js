@@ -42,6 +42,7 @@ Page({
     showBoard: false,
     boardRoomId: "",
     boardRoomName: "",
+    boardOnline: 0,
     messages: [],
     msgInput: "",
     msgSending: false,
@@ -57,6 +58,9 @@ Page({
   },
 
   onShow() {
+    if (typeof this.getTabBar === "function" && this.getTabBar()) {
+      this.getTabBar().setData({ selected: 1 });
+    }
     const loggedIn = isLoggedIn();
     const user = getUser() || {};
     this.setData({
@@ -231,6 +235,7 @@ Page({
       showBoard: true,
       boardRoomId: id,
       boardRoomName: room ? room.name : "",
+      boardOnline: room ? room.online_count || 0 : 0,
       messages: [],
       msgError: "",
       replyToId: 0,

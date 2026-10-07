@@ -1,0 +1,127 @@
+<!--pages/home/index.wxml-->
+<view class="page">
+  <view class="header">
+    <view class="header-left">
+      <view class="date">{{dateStr}}</view>
+      <view class="greet">{{greeting}}，{{nickname}}</view>
+    </view>
+    <view class="sign {{signedToday ? 'done' : ''}}" bindtap="signIn">
+      <text class="sign-icon">🎁</text>
+      <text class="sign-text">{{signedToday ? '已签到' : '签到 +' + signGain}}</text>
+    </view>
+  </view>
+
+  <view class="overview">
+    <view class="ov-item">
+      <view class="ov-title"><text class="ov-icon">⏱</text><text>专注</text></view>
+      <view class="ov-val">{{todayFocusedMin}}<text class="ov-unit"> 分钟</text></view>
+    </view>
+    <view class="ov-item ov-divider">
+      <view class="ov-title"><text class="ov-icon">🍅</text><text>番茄</text></view>
+      <view class="ov-val">{{todayFinished}}<text class="ov-unit"> 个</text></view>
+    </view>
+    <view class="ov-item">
+      <view class="ov-title"><text class="ov-icon">🔥</text><text>连续</text></view>
+      <view class="ov-val">{{streakDays}}<text class="ov-unit"> 天</text></view>
+    </view>
+  </view>
+
+  <view class="challenge" bindtap="openGoal">
+    <view class="challenge-icon">🏆</view>
+    <view class="challenge-body">
+      <view class="challenge-title">今日挑战 · 专注 {{goal}} 个番茄</view>
+      <view class="challenge-sub {{todayFinished >= goal ? 'done' : ''}}">
+        {{todayFinished >= goal ? '挑战完成！+50 经验已到账' : '已完成 ' + todayFinished + ' / ' + goal + '，达成奖励 +50 经验'}}
+      </view>
+      <view class="bar">
+        <view class="bar-fill {{todayFinished >= goal ? 'gold' : ''}}" style="width: {{progressWidth}}"></view>
+      </view>
+    </view>
+    <view class="challenge-adjust">调整 ›</view>
+  </view>
+
+  <view class="todo-header">
+    <view class="todo-title">今日待办</view>
+    <view class="todo-add" bindtap="openAdd">＋ 添加</view>
+  </view>
+
+  <scroll-view class="todo-scroll" scroll-y>
+    <view class="todo-empty" wx:if="{{tasks.length === 0}}">
+      <text class="todo-empty-icon">📝</text>
+      <text class="todo-empty-text">今天还没有待办</text>
+    </view>
+
+    <view class="todo-list" wx:else>
+      <view class="task {{item.done ? 'done' : ''}}" wx:for="{{tasks}}" wx:key="id">
+        <view class="check {{item.done ? 'checked' : ''}}" data-id="{{item.id}}" bindtap="toggleTask">
+          <text wx:if="{{item.done}}" class="check-mark">✓</text>
+        </view>
+        <view class="task-body">
+          <view class="task-title-row">
+            <text class="task-title">{{item.title}}</text>
+            <text class="diff diff-{{item.difficulty}}">{{item.diffText}}</text>
+          </view>
+          <view class="task-meta">🍅 {{item.pomodoros}} 个番茄 · {{item.durationMin}} 分钟</view>
+        </view>
+        <view class="task-start" wx:if="{{!item.done}}" data-id="{{item.id}}" bindtap="startFocus">
+          <text>▶</text><text>开始</text>
+        </view>
+        <view class="task-del" wx:if="{{item.done}}" data-id="{{item.id}}" bindtap="deleteTask">删除</view>
+      </view>
+    </view>
+    <view class="bottom-space"></view>
+  </scroll-view>
+
+  <!-- 添加待办 -->
+  <view class="mask" wx:if="{{showAdd}}" bindtap="closeAdd">
+    <view class="modal" catchtap="noop">
+      <view class="modal-title">添加待办</view>
+      <input class="input" placeholder="想专注做什么？" placeholder-class="ph" value="{{newTitle}}" bindinput="onNewTitle" maxlength="60" />
+
+      <view class="label">专注时长</view>
+      <view class="dur-wrap">
+        <view
+          class="dur {{!useCustomDuration && newDurationMin === item ? 'active' : ''}}"
+          wx:for="{{durationPresets}}"
+          wx:key="*this"
+          data-d="{{item}}"
+          bindtap="pickDuration"
+        >{{item}} 分钟</view>
+        <view class="dur {{useCustomDuration ? 'active' : ''}}" bindtap="pickCustom">自定义</view>
+      </view>
+
+      <input
+        wx:if="{{useCustomDuration}}"
+        class="input"
+        type="number"
+        placeholder="输入分钟数（1-600）"
+        placeholder-class="ph"
+        value="{{customDuration}}"
+        bindinput="onCustomDuration"
+      />
+
+      <view class="modal-actions">
+        <view class="btn btn-ghost" bindtap="closeAdd">取消</view>
+        <view class="btn btn-solid" bindtap="addTask">添加</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 挑战目标 -->
+  <view class="mask" wx:if="{{showGoal}}" bindtap="closeGoal">
+    <view class="modal modal-center" catchtap="noop">
+      <view class="goal-icon">🏆</view>
+      <view class="modal-title center">自定义每日挑战</view>
+      <view class="modal-sub center">每天想专注几个番茄？达成奖励 +50 经验</view>
+      <view class="goal-options">
+        <view
+          class="goal-opt {{goal === item ? 'active' : ''}}"
+          wx:for="{{goals}}"
+          wx:key="*this"
+          data-g="{{item}}"
+          bindtap="pickGoal"
+        >{{item}}</view>
+      </view>
+    </view>
+  </view>
+</view>

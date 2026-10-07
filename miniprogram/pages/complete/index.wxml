@@ -1,0 +1,24 @@
+<!--pages/complete/index.wxml-->
+<view class="page">
+  <view class="card">
+    <view class="confetti">
+      <text style="color:#E07A5F">●</text>
+      <text style="color:#6E9B57">■</text>
+      <text style="color:#D9A441">●</text>
+      <text style="color:#E07A5F">■</text>
+      <text style="color:#6E9B57">●</text>
+    </view>
+
+    <text class="tomato">🍅</text>
+    <view class="done-title">专注完成！</view>
+    <view class="done-sub">「{{title}}」已完成</view>
+
+    <view class="rewards">
+      <view class="reward"><text class="reward-icon" style="color:#E07A5F">🔥</text><text>番茄 +1</text></view>
+      <view class="reward"><text class="reward-icon" style="color:#D9A441">⭐</text><text>经验 +{{exp}}</text></view>
+      <view class="reward"><text class="reward-icon" style="color:#4C7A3E">🌳</text><text>种下 1 棵树</text></view>
+    </view>
+
+    <view class="btn" bindtap="goHome">太棒了</view>
+  </view>
+</view>

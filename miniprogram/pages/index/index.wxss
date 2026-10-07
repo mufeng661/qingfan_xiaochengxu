@@ -7,7 +7,7 @@ page {
 .page {
   display: flex;
   flex-direction: column;
-  height: 100vh;
+  height: calc(100vh - 110rpx - env(safe-area-inset-bottom));
   background-color: #f3f6ee;
 }
 
@@ -274,7 +274,7 @@ page {
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 100;
+  z-index: 1001;
 }
 
 .modal {
