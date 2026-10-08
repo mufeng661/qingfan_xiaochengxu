@@ -31,6 +31,8 @@ Page({
     ink: "#FFFFFF",
     dim: "rgba(255,255,255,0.72)",
     durations: [25, 15, 5, 1],
+    lockDuration: false,
+    durationMin: 25,
     backgrounds: BACKGROUNDS,
     noises: NOISES,
     noiseKey: "mute",
@@ -59,6 +61,8 @@ Page({
       durationSec,
       remainingSec: durationSec,
       timeText: store.formatMMSS(durationSec),
+      lockDuration: Boolean(taskId),
+      durationMin,
       pomodoroNo: (today ? today.pomodoroCount : 0) + 1,
     });
   },
@@ -130,6 +134,7 @@ Page({
 
   applyDuration(e) {
     if (this.data.running) return;
+    if (this.data.lockDuration) return;
     const min = Number(e.currentTarget.dataset.d);
     const durationSec = min * 60;
     this.elapsedSec = 0;

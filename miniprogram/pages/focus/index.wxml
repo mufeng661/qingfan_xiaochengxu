@@ -20,7 +20,7 @@
       </view>
     </view>
 
-    <view class="dur-row">
+    <view class="dur-row" wx:if="{{!lockDuration}}">
       <view
         class="dur-pill {{durationSec === item * 60 ? 'active' : ''}}"
         wx:for="{{durations}}"
@@ -29,6 +29,7 @@
         bindtap="applyDuration"
       >{{item}} 分</view>
     </view>
+    <view class="dur-lock" wx:else style="color: {{dim}}">时长由待办决定 · {{durationMin}} 分钟（不可更改）</view>
 
     <view class="toggle" bindtap="toggleTimer">
       <text>{{running ? '⏸ 暂停' : '▶ 开始专注'}}</text>
