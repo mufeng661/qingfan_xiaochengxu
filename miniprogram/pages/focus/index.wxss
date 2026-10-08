@@ -122,12 +122,6 @@ page {
   font-weight: bold;
 }
 
-.dur-lock {
-  margin-top: 44rpx;
-  font-size: 24rpx;
-  text-align: center;
-}
-
 .toggle {
   margin-top: 44rpx;
   padding: 26rpx 80rpx;

@@ -29,7 +29,6 @@
         bindtap="applyDuration"
       >{{item}} 分</view>
     </view>
-    <view class="dur-lock" wx:else style="color: {{dim}}">时长由待办决定 · {{durationMin}} 分钟（不可更改）</view>
 
     <view class="toggle" bindtap="toggleTimer">
       <text>{{running ? '⏸ 暂停' : '▶ 开始专注'}}</text>
