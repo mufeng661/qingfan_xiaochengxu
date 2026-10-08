@@ -4,29 +4,155 @@ page {
 }
 
 .page {
-  min-height: calc(100vh - 110rpx - env(safe-area-inset-bottom));
   display: flex;
   flex-direction: column;
+  height: calc(100vh - 110rpx - env(safe-area-inset-bottom));
+  background-color: #f3f6ee;
+}
+
+.header {
+  display: flex;
   align-items: center;
-  justify-content: center;
-  padding: 0 60rpx;
+  justify-content: space-between;
+  padding: 40rpx 44rpx 24rpx;
+}
+
+.title {
+  font-family: serif;
+  font-size: 48rpx;
+  color: #2c3a28;
+}
+
+.range {
+  display: flex;
+  gap: 12rpx;
+}
+
+.pill {
+  font-size: 25rpx;
+  color: #84917d;
+  padding: 12rpx 26rpx;
+  border-radius: 198rpx;
+  border: 2rpx solid #e3e9db;
+}
+
+.pill.active {
+  color: #ffffff;
+  background-color: #6e9b57;
+  border-color: #6e9b57;
+}
+
+.scroll {
+  flex: 1;
+  padding: 0 44rpx;
   box-sizing: border-box;
 }
 
-.ph-icon {
-  font-size: 120rpx;
-}
-
-.ph-title {
+.range-title {
   font-family: serif;
-  font-size: 44rpx;
+  font-size: 32rpx;
   color: #2c3a28;
-  margin-top: 28rpx;
+  margin: 8rpx 0 28rpx;
 }
 
-.ph-desc {
-  font-size: 26rpx;
+.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 80rpx 0;
+}
+
+.empty-icon {
+  font-size: 60rpx;
+}
+
+.empty-text {
+  font-size: 25rpx;
   color: #84917d;
   margin-top: 16rpx;
-  text-align: center;
+}
+
+.empty-hint {
+  font-size: 22rpx;
+  color: #b4bfae;
+  margin-top: 8rpx;
+}
+
+.timeline {
+  display: flex;
+  flex-direction: column;
+}
+
+.tl-row {
+  display: flex;
+}
+
+.tl-left {
+  flex: none;
+  width: 28rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.tl-dot {
+  width: 28rpx;
+  height: 28rpx;
+  border-radius: 50%;
+  background-color: #ffffff;
+  border: 6rpx solid #e07a5f;
+  box-sizing: border-box;
+  margin-top: 6rpx;
+}
+
+.tl-dot.aborted {
+  border-color: #b4bfae;
+}
+
+.tl-bar {
+  flex: 1;
+  width: 3rpx;
+  background-color: #dce8cf;
+  margin-top: 6rpx;
+}
+
+.tl-body {
+  flex: 1;
+  min-width: 0;
+  margin-left: 24rpx;
+  padding-bottom: 32rpx;
+}
+
+.tl-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.tl-title {
+  flex: 1;
+  min-width: 0;
+  font-size: 27rpx;
+  font-weight: 500;
+  color: #2c3a28;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.tl-time {
+  font-size: 22rpx;
+  color: #b4bfae;
+  flex: none;
+  padding-left: 16rpx;
+}
+
+.tl-meta {
+  font-size: 22rpx;
+  color: #84917d;
+  margin-top: 8rpx;
+}
+
+.bottom-space {
+  height: 40rpx;
 }

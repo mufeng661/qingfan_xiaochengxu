@@ -15,7 +15,7 @@ page {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  padding: 40rpx 44rpx 32rpx;
+  padding: 40rpx 44rpx 24rpx;
 }
 
 .title {
@@ -60,57 +60,6 @@ page {
   color: #ffffff;
 }
 
-.user-chip {
-  width: 56rpx;
-  height: 56rpx;
-  border-radius: 28rpx;
-  background-color: #6e9b57;
-  color: #ffffff;
-  font-size: 26rpx;
-  font-weight: 500;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.locked {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 0 44rpx;
-}
-
-.locked-icon {
-  font-size: 112rpx;
-}
-
-.locked-title {
-  font-family: serif;
-  font-size: 40rpx;
-  color: #2c3a28;
-  margin-top: 24rpx;
-}
-
-.locked-desc {
-  font-size: 26rpx;
-  color: #84917d;
-  text-align: center;
-  width: 520rpx;
-  margin-top: 16rpx;
-}
-
-.locked-btn {
-  padding: 22rpx 48rpx;
-  border-radius: 198rpx;
-  background-color: #6e9b57;
-  color: #ffffff;
-  font-size: 28rpx;
-  font-weight: 500;
-  margin-top: 36rpx;
-}
-
 .scroll {
   flex: 1;
   padding: 0 44rpx;
@@ -120,143 +69,297 @@ page {
 .error {
   font-size: 24rpx;
   color: #e07a5f;
-  margin-bottom: 24rpx;
+  margin-bottom: 20rpx;
 }
 
-.section-title {
-  font-family: serif;
-  font-size: 32rpx;
-  color: #2c3a28;
-  margin-bottom: 24rpx;
+/* 入口卡片 */
+.entry-list {
+  display: flex;
+  flex-direction: column;
+  gap: 28rpx;
+  margin-top: 32rpx;
 }
 
-.empty {
-  padding: 100rpx 0;
+.entry-card {
   display: flex;
   flex-direction: column;
   align-items: center;
+  padding: 60rpx 0;
+  background-color: #ffffff;
+  border: 2rpx solid #e3e9db;
+  border-radius: 36rpx;
 }
 
-.empty-icon {
-  font-size: 96rpx;
+.entry-icon {
+  width: 128rpx;
+  height: 128rpx;
+  border-radius: 40rpx;
+  background-color: #dce8cf;
+  font-size: 60rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.empty-text {
-  font-size: 28rpx;
-  color: #84917d;
-  margin-top: 24rpx;
+.entry-title {
+  font-family: serif;
+  font-size: 34rpx;
+  color: #2c3a28;
+  margin-top: 28rpx;
 }
 
-.empty-hint {
+.entry-desc {
   font-size: 24rpx;
   color: #b4bfae;
   margin-top: 12rpx;
-  text-align: center;
 }
 
-.room-list {
+/* 房间详情 */
+.room-top {
+  display: flex;
+  align-items: flex-start;
+}
+
+.room-top-left {
+  flex: 1;
+  min-width: 0;
+}
+
+.room-name {
+  font-size: 40rpx;
+  font-weight: bold;
+  color: #2c3a28;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.join-code {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  margin-top: 10rpx;
+}
+
+.jc-label {
+  font-size: 22rpx;
+  color: #b4bfae;
+}
+
+.jc-value {
+  font-size: 27rpx;
+  font-weight: 500;
+  color: #84917d;
+}
+
+.jc-copy {
+  font-size: 24rpx;
+  color: #6e9b57;
+}
+
+.member-pill {
+  display: inline-block;
+  margin-top: 16rpx;
+  font-size: 22rpx;
+  color: #b4bfae;
+  background-color: #eaf1e2;
+  padding: 4rpx 16rpx;
+  border-radius: 198rpx;
+}
+
+.room-top-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  flex: none;
+  padding-left: 20rpx;
+}
+
+.big-num {
+  font-size: 48rpx;
+  font-weight: bold;
+  color: #e07a5f;
+}
+
+.big-label {
+  font-size: 21rpx;
+  color: #b4bfae;
+}
+
+.room-top-right .big-num:nth-child(3) {
+  margin-top: 16rpx;
+}
+
+.room-ops {
+  display: flex;
+  gap: 20rpx;
+  margin-top: 28rpx;
+}
+
+.op-pill {
+  font-size: 25rpx;
+  color: #84917d;
+  padding: 14rpx 26rpx;
+  border-radius: 198rpx;
+  border: 2rpx solid #e3e9db;
+}
+
+.op-active {
+  color: #4c7a3e;
+  font-weight: 500;
+  background-color: #dce8cf;
+  border-color: #dce8cf;
+}
+
+.daily-hint {
+  font-size: 22rpx;
+  color: #b4bfae;
+  margin-top: 20rpx;
+}
+
+.rank-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 36rpx 0 20rpx;
+}
+
+.rank-title {
+  font-family: serif;
+  font-size: 30rpx;
+  color: #2c3a28;
+}
+
+.rank-tip {
+  font-size: 21rpx;
+  color: #b4bfae;
+}
+
+.no-member {
+  font-size: 25rpx;
+  color: #b4bfae;
+  padding: 24rpx 0;
+}
+
+.member-list {
   display: flex;
   flex-direction: column;
   gap: 20rpx;
 }
 
-.room-card {
-  background-color: #ffffff;
-  border: 2rpx solid #e3e9db;
-  border-radius: 32rpx;
-  padding: 28rpx;
-}
-
-.room-row {
-  display: flex;
-  align-items: flex-start;
-}
-
-.room-main {
-  flex: 1;
-  min-width: 0;
-}
-
-.room-name-row {
+.member-card {
   display: flex;
   align-items: center;
-  flex-wrap: wrap;
+  padding: 28rpx;
+  background-color: #ffffff;
+  border: 2rpx solid #e3e9db;
+  border-radius: 28rpx;
+}
+
+.rank-badge {
+  flex: none;
+  width: 48rpx;
+  height: 48rpx;
+  border-radius: 24rpx;
+  color: #ffffff;
+  font-size: 24rpx;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.rank-badge.r0 { background-color: #d9a441; }
+.rank-badge.r1 { background-color: #84917d; }
+.rank-badge.r2 { background-color: #e07a5f; }
+.rank-badge.r3 { background-color: #e3e9db; color: #84917d; }
+
+.member-body {
+  flex: 1;
+  min-width: 0;
+  margin-left: 20rpx;
+}
+
+.member-name-row {
+  display: flex;
+  align-items: center;
   gap: 12rpx;
 }
 
-.room-name {
-  font-size: 30rpx;
+.member-name {
+  font-size: 28rpx;
   font-weight: 500;
   color: #2c3a28;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
-.tag {
+.tag-owner {
   font-size: 20rpx;
+  color: #d9a441;
+  background-color: #f4e8ce;
   padding: 4rpx 12rpx;
+  border-radius: 198rpx;
+  flex: none;
+}
+
+.member-sub {
+  font-size: 23rpx;
+  color: #b4bfae;
+  margin-top: 6rpx;
+}
+
+.member-tags {
+  display: flex;
+  gap: 12rpx;
+  margin-top: 12rpx;
+}
+
+.mtag {
+  font-size: 20rpx;
+  padding: 4rpx 14rpx;
   border-radius: 198rpx;
 }
 
-.tag-gold {
-  color: #d9a441;
-  background-color: #f4e8ce;
-}
-
-.tag-tomato {
+.mtag-tomato {
   color: #e07a5f;
   background-color: #f6e1d6;
 }
 
-.room-id-row {
+.mtag-gold {
+  color: #d9a441;
+  background-color: #f4e8ce;
+}
+
+.member-right {
+  flex: none;
   display: flex;
-  align-items: center;
-  gap: 12rpx;
-  margin-top: 8rpx;
+  flex-direction: column;
+  align-items: flex-end;
+  padding-left: 16rpx;
 }
 
-.room-id {
-  font-size: 21rpx;
-  color: #b4bfae;
+.member-min {
+  font-size: 40rpx;
+  font-weight: bold;
+  color: #84917d;
 }
 
-.room-copy {
+.member-min-label {
   font-size: 20rpx;
-  color: #4c7a3e;
-  background-color: #dce8cf;
-  border-radius: 6rpx;
-  padding: 2rpx 10rpx;
-}
-
-.room-meta {
-  display: block;
-  font-size: 22rpx;
-  color: #b4bfae;
-  margin-top: 4rpx;
-}
-
-.room-actions {
-  display: flex;
-  align-items: center;
-  gap: 16rpx;
-  padding-left: 12rpx;
-}
-
-.icon-btn {
-  font-size: 32rpx;
-  padding: 8rpx;
-}
-
-.icon-btn.danger {
-  font-size: 28rpx;
   color: #b4bfae;
 }
 
-.text-btn {
-  font-size: 24rpx;
-  padding: 8rpx;
-}
-
-.text-btn.danger {
+.danger-btn {
+  margin-top: 36rpx;
+  height: 92rpx;
+  line-height: 92rpx;
+  text-align: center;
+  border-radius: 28rpx;
+  border: 2rpx solid #e3e9db;
   color: #e07a5f;
+  font-size: 28rpx;
 }
 
 .bottom-space {
@@ -317,7 +420,8 @@ page {
   color: #b4bfae;
 }
 
-.switch-row {
+.switch-row,
+.daily-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -327,6 +431,35 @@ page {
 .switch-label {
   font-size: 26rpx;
   color: #2c3a28;
+}
+
+.daily-input-wrap {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+}
+
+.daily-input {
+  width: 140rpx;
+  height: 72rpx;
+  background-color: #eaf1e2;
+  border-radius: 18rpx;
+  text-align: right;
+  padding: 0 20rpx;
+  font-size: 28rpx;
+  color: #2c3a28;
+  box-sizing: border-box;
+}
+
+.daily-unit {
+  font-size: 24rpx;
+  color: #b4bfae;
+}
+
+.daily-tip {
+  font-size: 21rpx;
+  color: #b4bfae;
+  margin-bottom: 8rpx;
 }
 
 .modal-actions {
@@ -361,6 +494,11 @@ page {
   background-color: #e07a5f;
 }
 
+.btn-disabled {
+  color: #ffffff;
+  background-color: #e3e9db;
+}
+
 .confirm-text {
   font-size: 25rpx;
   color: #84917d;
@@ -369,7 +507,7 @@ page {
   margin-top: 16rpx;
 }
 
-/* ===== 留言弹窗 ===== */
+/* 留言弹窗 */
 .modal-board {
   width: 88%;
   padding: 40rpx;
@@ -456,17 +594,6 @@ page {
   font-weight: 500;
 }
 
-.nickname-input {
-  height: 72rpx;
-  background-color: #eaf1e2;
-  border-radius: 18rpx;
-  padding: 0 24rpx;
-  font-size: 25rpx;
-  color: #2c3a28;
-  margin-top: 16rpx;
-  box-sizing: border-box;
-}
-
 .board-error {
   font-size: 22rpx;
   color: #e07a5f;
@@ -535,21 +662,47 @@ page {
   word-break: break-all;
 }
 
-.msg-actions {
-  display: flex;
-  gap: 28rpx;
+.msg-reply {
+  font-size: 21rpx;
+  color: #4c7a3e;
   margin-top: 8rpx;
 }
 
-.msg-action {
-  font-size: 21rpx;
-  color: #4c7a3e;
+/* 未登录 */
+.locked {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 0 44rpx;
 }
 
-.msg-action.liked {
-  color: #e07a5f;
+.locked-icon {
+  font-size: 112rpx;
 }
 
-.msg-action.danger {
-  color: #e07a5f;
+.locked-title {
+  font-family: serif;
+  font-size: 40rpx;
+  color: #2c3a28;
+  margin-top: 24rpx;
+}
+
+.locked-desc {
+  font-size: 26rpx;
+  color: #84917d;
+  text-align: center;
+  width: 520rpx;
+  margin-top: 16rpx;
+}
+
+.locked-btn {
+  padding: 22rpx 48rpx;
+  border-radius: 198rpx;
+  background-color: #6e9b57;
+  color: #ffffff;
+  font-size: 28rpx;
+  font-weight: 500;
+  margin-top: 36rpx;
 }

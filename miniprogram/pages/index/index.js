@@ -1,122 +1,138 @@
 const { call } = require("../../utils/api");
-const { isLoggedIn, getUser, logout } = require("../../utils/auth");
+const auth = require("../../utils/auth");
 
-function pad(n) {
-  return n < 10 ? "0" + n : "" + n;
-}
-
-function formatTime(ts) {
+function fmt(ts) {
   const d = new Date(Number(ts));
   if (isNaN(d.getTime())) return "";
-  return (
-    pad(d.getMonth() + 1) +
-    "-" +
-    pad(d.getDate()) +
-    " " +
-    pad(d.getHours()) +
-    ":" +
-    pad(d.getMinutes())
-  );
+  const p = (n) => (n < 10 ? "0" + n : "" + n);
+  return p(d.getMonth() + 1) + "-" + p(d.getDate()) + " " + p(d.getHours()) + ":" + p(d.getMinutes());
 }
 
 Page({
   data: {
     loggedIn: false,
-    username: "",
-    avatarSeed: "青",
-    rooms: [],
-    roomError: "",
     loading: false,
+    roomError: "",
 
+    room: null,
+    members: [],
+    myName: "",
+
+    // 创建
     showCreate: false,
     newName: "",
     newPwd: "",
     usePwd: false,
+    newDailyMin: "30",
     creating: false,
-
+    // 加入
     showJoin: false,
     joinCode: "",
     joinPwd: "",
     joining: false,
-
+    // 留言
     showBoard: false,
     boardRoomId: "",
     boardRoomName: "",
-    boardOnline: 0,
     messages: [],
     msgInput: "",
     msgSending: false,
     msgError: "",
     replyToId: 0,
     replyToName: "",
-    nickname: "",
-
+    // 解散
     showDelete: false,
     pendingDeleteName: "",
+    dissolveLeft: 0,
+    // 退出
     showLeave: false,
     pendingLeaveName: "",
+    // 移出成员
+    showKick: false,
+    kickMemberId: "",
+    kickMemberName: "",
   },
 
   onShow() {
     if (typeof this.getTabBar === "function" && this.getTabBar()) {
       this.getTabBar().setData({ selected: 1 });
     }
-    const loggedIn = isLoggedIn();
-    const user = getUser() || {};
-    this.setData({
-      loggedIn,
-      username: user.username || "",
-      avatarSeed: user.avatarSeed || (user.username ? String(user.username).slice(0, 1) : "青"),
-    });
-    if (loggedIn) {
-      this.loadRooms();
-    } else {
-      this.setData({ rooms: [], roomError: "", loading: false });
-    }
+    this.refresh();
   },
 
   onPullDownRefresh() {
-    this.loadRooms().then(() => wx.stopPullDownRefresh());
+    this.refresh().then(() => wx.stopPullDownRefresh());
   },
 
-  goLogin() {
-    wx.navigateTo({ url: "/pages/login/index" });
-  },
-
-  onUserTap() {
-    wx.showActionSheet({
-      itemList: ["退出登录"],
-      success: (res) => {
-        if (res.tapIndex === 0) {
-          logout();
-          this.setData({ loggedIn: false, username: "", avatarSeed: "青", rooms: [] });
-          wx.showToast({ title: "已退出登录", icon: "none" });
-        }
-      },
-    });
+  onUnload() {
+    this.stopDissolveCountdown();
   },
 
   noop() {},
 
-  loadRooms() {
+  userNickname() {
+    const u = auth.getUser();
+    return (u && (u.username || u.nickname)) || "";
+  },
+
+  refresh() {
+    const loggedIn = auth.isLoggedIn();
+    this.setData({ loggedIn, myName: this.userNickname() || "我" });
+    if (!loggedIn) {
+      this.setData({ room: null, members: [], loading: false });
+      return Promise.resolve();
+    }
     this.setData({ loading: true });
     return call("room.listMine")
       .then((data) => {
-        const rooms = (data.list || []).map((r) =>
-          Object.assign({}, r, {
-            isOwner: r.role === "owner",
-            timeText: formatTime(r.created_at),
-          })
-        );
-        this.setData({ rooms, roomError: "", loading: false });
+        const list = data.list || [];
+        if (!list.length) {
+          this.setData({ room: null, members: [], roomError: "", loading: false });
+          return null;
+        }
+        const room = list[0];
+        this.setData({ roomError: "" });
+        return call("room.get", { roomId: room.id }).then((detail) => {
+          const raw = (detail.members || [])
+            .slice()
+            .sort((a, b) => (Number(b.focus_minutes) || 0) - (Number(a.focus_minutes) || 0));
+          const members = raw.map((m, i) =>
+            Object.assign({}, m, {
+              rank: i + 1,
+              displayName:
+                m.user_id === this._userId
+                  ? this.data.myName
+                  : m.nickname || "用户 …" + String(m.user_id).slice(-6),
+              rankClass: i === 0 ? "r0" : i === 1 ? "r1" : i === 2 ? "r2" : "r3",
+              isMe: m.user_id === this._userId,
+            })
+          );
+          const focusingCount = members.filter((m) => m.focusing === 1).length;
+          const myIdx = members.findIndex((m) => m.isMe);
+          const merged = Object.assign({}, room, detail, {
+            timeText: fmt(room.created_at),
+            joinCode: detail.join_code || room.join_code || room.id,
+            dailyMin: detail.daily_min != null ? detail.daily_min : 30,
+            member_count: detail.member_count != null ? detail.member_count : members.length,
+            focusing_count: detail.focusing_count != null ? detail.focusing_count : focusingCount,
+            my_rank: detail.my_rank != null ? detail.my_rank : myIdx >= 0 ? myIdx + 1 : 1,
+          });
+          this.setData({ room: merged, members, loading: false });
+        });
       })
       .catch(() => {
         this.setData({ loading: false, roomError: "自习室加载失败，请检查网络后重试" });
       });
   },
 
+  // 记录当前用户手机号用于成员高亮
+  onLoad() {
+    this._userId = (auth.getUser() && auth.getUser().phone) || "";
+  },
+
+  // ===== 创建 =====
   openCreate() {
-    this.setData({ showCreate: true, newName: "", newPwd: "", usePwd: false });
+    this.setData({ showCreate: true, newName: "", newPwd: "", usePwd: false, newDailyMin: "30" });
   },
   closeCreate() {
     this.setData({ showCreate: false });
@@ -130,6 +146,9 @@ Page({
   onUsePwd(e) {
     this.setData({ usePwd: e.detail.value });
   },
+  onNewDaily(e) {
+    this.setData({ newDailyMin: e.detail.value.replace(/[^0-9]/g, "") });
+  },
   createRoom() {
     const name = (this.data.newName || "").trim();
     if (!name) {
@@ -141,19 +160,28 @@ Page({
       return;
     }
     if (this.data.creating) return;
+    const dm = parseInt(this.data.newDailyMin, 10);
+    const dailyMin = Number.isFinite(dm) && dm >= 0 ? dm : 30;
     this.setData({ creating: true });
-    call("room.create", { name, password: this.data.usePwd ? this.data.newPwd : "" })
-      .then(() => {
-        this.setData({ showCreate: false, newName: "", newPwd: "", usePwd: false, creating: false });
-        return this.loadRooms();
+    call("room.create", {
+      name,
+      password: this.data.usePwd ? this.data.newPwd : "",
+      dailyMin,
+      nickname: this.userNickname(),
+    })
+      .then((room) => {
+        this.setData({ showCreate: false, creating: false });
+        wx.setClipboardData({ data: String(room.id) });
+        wx.showToast({ title: "自习室已创建，房间号已复制", icon: "none" });
+        return this.refresh();
       })
-      .then(() => wx.showToast({ title: "自习室已创建" }))
       .catch((err) => {
         this.setData({ creating: false });
         wx.showToast({ title: err.message || "创建失败", icon: "none" });
       });
   },
 
+  // ===== 加入 =====
   openJoin() {
     this.setData({ showJoin: true, joinCode: "", joinPwd: "" });
   },
@@ -166,81 +194,55 @@ Page({
   onJoinPwd(e) {
     this.setData({ joinPwd: e.detail.value });
   },
-  joinByCode() {
+  joinRoom() {
     const code = (this.data.joinCode || "").trim();
     if (!code) {
-      wx.showToast({ title: "请输入房间号", icon: "none" });
+      wx.showToast({ title: "请输入房间号或加入码", icon: "none" });
       return;
     }
     if (this.data.joining) return;
     this.setData({ joining: true });
-    call("room.join", { roomId: code, password: this.data.joinPwd })
+    call("room.join", { roomId: code, password: this.data.joinPwd, nickname: this.userNickname() })
       .then(() => {
-        this.setData({ showJoin: false, joinCode: "", joinPwd: "", joining: false });
-        return this.loadRooms();
+        this.setData({ showJoin: false, joining: false });
+        wx.showToast({ title: "已加入房间", icon: "none" });
+        return this.refresh();
       })
-      .then(() => wx.showToast({ title: "已加入房间" }))
       .catch((err) => {
         this.setData({ joining: false });
         wx.showToast({ title: err.message || "加入失败", icon: "none" });
       });
   },
 
-  askDelete(e) {
-    const r = this.data.rooms[e.currentTarget.dataset.index];
-    if (!r) return;
-    this.setData({ showDelete: true, pendingDeleteId: r.id, pendingDeleteName: r.name });
+  // ===== 分享 / 复制 =====
+  copyText(text) {
+    if (!text) return;
+    wx.setClipboardData({ data: String(text) });
   },
-  closeDelete() {
-    this.setData({ showDelete: false });
+  copyJoinCode() {
+    this.copyText(this.data.room && this.data.room.joinCode);
   },
-  confirmDelete() {
-    const id = this.data.pendingDeleteId;
-    this.setData({ showDelete: false });
-    if (!id) return;
-    call("room.delete", { roomId: id })
-      .then(() => this.loadRooms())
-      .then(() => wx.showToast({ title: "已解散自习室" }))
-      .catch((err) => wx.showToast({ title: err.message || "操作失败", icon: "none" }));
-  },
-
-  askLeave(e) {
-    const r = this.data.rooms[e.currentTarget.dataset.index];
-    if (!r) return;
-    this.setData({ showLeave: true, pendingLeaveId: r.id, pendingLeaveName: r.name });
-  },
-  closeLeave() {
-    this.setData({ showLeave: false });
-  },
-  confirmLeave() {
-    const id = this.data.pendingLeaveId;
-    this.setData({ showLeave: false });
-    if (!id) return;
-    call("room.leave", { roomId: id })
-      .then(() => this.loadRooms())
-      .then(() => wx.showToast({ title: "已退出自习室" }))
-      .catch((err) => wx.showToast({ title: err.message || "退出失败", icon: "none" }));
+  shareRoom() {
+    const room = this.data.room;
+    if (!room) return;
+    const me = this.data.myName;
+    const text =
+      "青番自习室邀请：" + me + " 邀请你进入「" + room.name + "」自习室，房间号 " + room.id + "，一起专注吧！";
+    wx.setClipboardData({ data: text });
   },
 
-  copyRoomId(e) {
-    const id = e.currentTarget.dataset.id;
-    if (!id) return;
-    wx.setClipboardData({ data: String(id) });
-  },
-
-  openBoard(e) {
-    const id = e.currentTarget.dataset.id;
-    const room = this.data.rooms.find((r) => String(r.id) === String(id));
+  // ===== 留言 =====
+  openBoard() {
+    const room = this.data.room;
+    if (!room) return;
     this.setData({
       showBoard: true,
-      boardRoomId: id,
-      boardRoomName: room ? room.name : "",
-      boardOnline: room ? room.online_count || 0 : 0,
+      boardRoomId: room.id,
+      boardRoomName: room.name,
       messages: [],
       msgError: "",
       replyToId: 0,
       replyToName: "",
-      nickname: this.data.username || wx.getStorageSync("commentNickname") || "",
     });
     this.loadMessages();
   },
@@ -250,12 +252,9 @@ Page({
   loadMessages() {
     if (!this.data.boardRoomId) return Promise.resolve();
     return call("comment.list", { roomId: this.data.boardRoomId, page: 1, pageSize: 50 })
-      .then((data) => {
-        this.setData({ messages: this.buildTree(data.list || []), msgError: "" });
-      })
+      .then((data) => this.setData({ messages: this.buildTree(data.list || []), msgError: "" }))
       .catch(() => this.setData({ msgError: "留言加载失败，请检查网络后重试" }));
   },
-
   buildTree(rows) {
     const map = {};
     rows.forEach((row) => {
@@ -263,11 +262,10 @@ Page({
         children: [],
         depth: 0,
         avatarText: row.nickname ? String(row.nickname).slice(0, 1) : "客",
-        timeText: formatTime(row.created_at),
+        timeText: fmt(row.created_at),
         replyToName: row.reply_to_name || "",
       });
     });
-
     const roots = [];
     rows.forEach((row) => {
       const node = map[String(row.id)];
@@ -277,12 +275,8 @@ Page({
         roots.push(node);
       }
     });
-
     roots.sort((a, b) => Number(b.created_at) - Number(a.created_at));
-    Object.keys(map).forEach((key) => {
-      map[key].children.sort((a, b) => Number(a.created_at) - Number(b.created_at));
-    });
-
+    Object.keys(map).forEach((k) => map[k].children.sort((a, b) => Number(a.created_at) - Number(b.created_at)));
     const flat = [];
     const walk = (nodes, depth) => {
       nodes.forEach((node) => {
@@ -294,12 +288,8 @@ Page({
     walk(roots, 0);
     return flat;
   },
-
   onMsgInput(e) {
     this.setData({ msgInput: e.detail.value });
-  },
-  onNicknameInput(e) {
-    this.setData({ nickname: e.detail.value });
   },
   setReply(e) {
     const m = this.data.messages[e.currentTarget.dataset.index];
@@ -316,51 +306,115 @@ Page({
       return;
     }
     if (this.data.msgSending) return;
-    const nickname = (this.data.nickname || "").trim() || "匿名";
-    wx.setStorageSync("commentNickname", nickname);
-
     this.setData({ msgSending: true });
-    const payload = { roomId: this.data.boardRoomId, content: text, nickname, platform: "wechat" };
+    const payload = { roomId: this.data.boardRoomId, content: text, nickname: this.data.myName, platform: "wechat" };
     if (this.data.replyToId) payload.parentId = this.data.replyToId;
-
     call("comment.add", payload)
       .then(() => {
         this.setData({ msgInput: "", msgSending: false });
         this.cancelReply();
         return this.loadMessages();
       })
-      .then(() => wx.showToast({ title: "留言成功" }))
-      .catch(() => {
-        this.setData({ msgSending: false, msgError: "留言发送失败，请稍后重试" });
+      .then(() => wx.showToast({ title: "已发送", icon: "none" }))
+      .catch((err) => {
+        this.setData({ msgSending: false, msgError: err.message || "发送失败" });
       });
   },
-  likeMsg(e) {
-    const m = this.data.messages[e.currentTarget.dataset.index];
+
+  // ===== 移出成员 =====
+  askKick(e) {
+    const m = this.data.members[e.currentTarget.dataset.index];
     if (!m) return;
-    const action = m.liked ? "unlike" : "like";
-    call("comment.like", { roomId: this.data.boardRoomId, id: m.id, action })
-      .then((data) => {
-        const messages = this.data.messages.slice();
-        const i = messages.findIndex((x) => String(x.id) === String(m.id));
-        if (i > -1) {
-          messages[i] = Object.assign({}, messages[i], { likes: data.likes, liked: data.liked });
-          this.setData({ messages });
-        }
+    if (m.role === "owner" || m.isMe) return;
+    this.setData({ showKick: true, kickMemberId: m.user_id, kickMemberName: m.displayName });
+  },
+  closeKick() {
+    this.setData({ showKick: false });
+  },
+  confirmKick() {
+    const target = this.data.kickMemberId;
+    const room = this.data.room;
+    this.setData({ showKick: false });
+    if (!target || !room) return;
+    call("room.kick", { roomId: room.id, userId: target, targetUserId: target })
+      .then(() => {
+        wx.showToast({ title: "已移出该成员", icon: "none" });
+        return this.refresh();
+      })
+      .catch((err) => wx.showToast({ title: err.message || "移出失败", icon: "none" }));
+  },
+
+  // ===== 解散（10s） =====
+  onDangerTap() {
+    const room = this.data.room;
+    if (!room) return;
+    if (room.role === "owner") {
+      this.askDelete();
+    } else {
+      this.askLeave();
+    }
+  },
+
+  askDelete() {
+    const room = this.data.room;
+    if (!room) return;
+    this.setData({ showDelete: true, pendingDeleteName: room.name, dissolveLeft: 10 });
+    this.stopDissolveCountdown();
+    this._dissolveTimer = setInterval(() => {
+      const left = this.data.dissolveLeft - 1;
+      if (left <= 0) {
+        this.stopDissolveCountdown();
+        this.setData({ dissolveLeft: 0 });
+      } else {
+        this.setData({ dissolveLeft: left });
+      }
+    }, 1000);
+  },
+  stopDissolveCountdown() {
+    if (this._dissolveTimer) {
+      clearInterval(this._dissolveTimer);
+      this._dissolveTimer = null;
+    }
+  },
+  cancelDelete() {
+    this.stopDissolveCountdown();
+    this.setData({ showDelete: false, dissolveLeft: 0 });
+  },
+  confirmDelete() {
+    if (this.data.dissolveLeft > 0) return;
+    const room = this.data.room;
+    this.cancelDelete();
+    if (!room) return;
+    call("room.delete", { roomId: room.id })
+      .then(() => {
+        wx.showToast({ title: "已解散自习室", icon: "none" });
+        return this.refresh();
       })
       .catch((err) => wx.showToast({ title: err.message || "操作失败", icon: "none" }));
   },
-  deleteMsg(e) {
-    const m = this.data.messages[e.currentTarget.dataset.index];
-    if (!m) return;
-    wx.showModal({
-      title: "删除留言",
-      content: "确定要删除这条留言吗？",
-      success: (res) => {
-        if (!res.confirm) return;
-        call("comment.delete", { roomId: this.data.boardRoomId, id: m.id })
-          .then(() => this.loadMessages())
-          .catch((err) => wx.showToast({ title: err.message || "删除失败", icon: "none" }));
-      },
-    });
+
+  // ===== 退出 =====
+  askLeave() {
+    const room = this.data.room;
+    if (!room) return;
+    this.setData({ showLeave: true, pendingLeaveName: room.name });
+  },
+  closeLeave() {
+    this.setData({ showLeave: false });
+  },
+  confirmLeave() {
+    const room = this.data.room;
+    this.setData({ showLeave: false });
+    if (!room) return;
+    call("room.leave", { roomId: room.id })
+      .then(() => {
+        wx.showToast({ title: "已退出自习室", icon: "none" });
+        return this.refresh();
+      })
+      .catch((err) => wx.showToast({ title: err.message || "退出失败", icon: "none" }));
+  },
+
+  goLogin() {
+    wx.navigateTo({ url: "/pages/login/index" });
   },
 });

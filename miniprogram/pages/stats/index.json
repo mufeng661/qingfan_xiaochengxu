@@ -1,5 +1,6 @@
 {
   "usingComponents": {},
   "navigationBarTitleText": "时间轴",
+  "enablePullDownRefresh": true,
   "backgroundColor": "#F3F6EE"
 }

@@ -1,6 +1,158 @@
 <!--pages/data/index.wxml-->
 <view class="page">
-  <view class="ph-icon">📊</view>
-  <view class="ph-title">数据</view>
-  <view class="ph-desc">专注数据统计将在这里展示，敬请期待</view>
+  <view class="header">
+    <view class="title">数据</view>
+  </view>
+
+  <scroll-view class="scroll" scroll-y>
+    <!-- 累计 -->
+    <view class="card">
+      <view class="card-title">累计专注</view>
+      <view class="stat-row">
+        <view class="stat">
+          <view class="stat-val tomato">{{totalSessions}} 次</view>
+          <view class="stat-label">专注次数</view>
+        </view>
+        <view class="stat">
+          <view class="stat-val leaf">{{totalHoursText}}</view>
+          <view class="stat-label">累计时长</view>
+        </view>
+        <view class="stat">
+          <view class="stat-val gold">{{avgDailyMinutes}} 分</view>
+          <view class="stat-label">日均时长</view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 当日 -->
+    <view class="card">
+      <view class="card-head">
+        <view class="card-title">当日专注</view>
+        <view class="card-sub">{{todayLabel}}</view>
+      </view>
+      <view class="stat-row">
+        <view class="stat">
+          <view class="stat-val tomato">{{todaySessions}} 次</view>
+          <view class="stat-label">专注次数</view>
+        </view>
+        <view class="stat">
+          <view class="stat-val leaf">{{todayMinutes}} 分</view>
+          <view class="stat-label">专注时长</view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 饼图 -->
+    <view class="card">
+      <view class="card-head">
+        <view class="card-title">专注时长分布</view>
+        <view class="pills">
+          <view class="pill {{pieRange === 'day' ? 'active' : ''}}" data-k="day" bindtap="setPieRange">日</view>
+          <view class="pill {{pieRange === 'week' ? 'active' : ''}}" data-k="week" bindtap="setPieRange">周</view>
+          <view class="pill {{pieRange === 'month' ? 'active' : ''}}" data-k="month" bindtap="setPieRange">月</view>
+        </view>
+      </view>
+
+      <view class="empty-line" wx:if="{{slices.length === 0}}">该范围暂无专注记录</view>
+      <view class="pie-row" wx:else>
+        <canvas type="2d" id="pie" class="pie-canvas"></canvas>
+        <view class="legend">
+          <view class="legend-item" wx:for="{{slices}}" wx:key="name">
+            <view class="legend-dot" style="background: {{item.color}}"></view>
+            <text class="legend-name">{{item.name}}</text>
+            <text class="legend-pct">{{item.percent}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 月度 -->
+    <view class="card">
+      <view class="month-head">
+        <text class="month-title">月度专注统计</text>
+        <text class="month-label">{{monthTitle}}</text>
+        <view class="month-spacer"></view>
+        <text class="month-icon" bindtap="openHeat">🗓</text>
+        <text class="month-nav" bindtap="prevMonth">‹</text>
+        <text class="month-nav {{canNext ? '' : 'disabled'}}" bindtap="nextMonth">›</text>
+      </view>
+
+      <view class="chart-row">
+        <view class="y-axis">
+          <text class="axis-label" wx:for="{{yLabels}}" wx:key="index">{{item}}</text>
+        </view>
+        <scroll-view class="chart-scroll" scroll-x>
+          <view class="chart-inner">
+            <canvas type="2d" id="chart" class="chart-canvas" style="width: {{chartW}}px; height: 158px;"></canvas>
+            <view class="x-axis" style="width: {{chartW}}px;">
+              <text class="x-label" wx:for="{{xLabels}}" wx:key="index">{{item}}</text>
+            </view>
+          </view>
+        </scroll-view>
+      </view>
+    </view>
+
+    <!-- 打断 -->
+    <view class="card">
+      <view class="card-title">{{monthTitle}} 打断原因分布</view>
+      <view class="empty-line" wx:if="{{interrupts.length === 0}}">该月暂无打断记录 🎉</view>
+      <block wx:else>
+        <view class="bar-item" wx:for="{{interrupts}}" wx:key="name">
+          <text class="bar-name">{{item.name}}</text>
+          <view class="bar-track">
+            <view class="bar-fill" style="width: {{item.pct}}"></view>
+          </view>
+          <text class="bar-count">{{item.count}}</text>
+        </view>
+      </block>
+    </view>
+
+    <!-- AI -->
+    <view class="ai-card">
+      <view class="ai-head">
+        <view class="ai-badge">AI</view>
+        <text class="ai-title">专注洞察</text>
+      </view>
+      <text class="ai-text" wx:if="{{!loggedIn}}">登录后解锁 AI 专注洞察报告</text>
+      <text class="ai-text" wx:else>专注时开启免打扰、每 4 个番茄安排 15 分钟长休息，能有效减少打断。</text>
+    </view>
+
+    <view class="bottom-space"></view>
+  </scroll-view>
+
+  <!-- 热力图 -->
+  <view class="mask" wx:if="{{showHeat}}" bindtap="closeHeat">
+    <view class="heat-modal" catchtap="noop">
+      <view class="heat-head">
+        <text class="month-nav" bindtap="prevMonth">‹</text>
+        <text class="heat-title">热力图</text>
+        <text class="month-nav {{canNext ? '' : 'disabled'}}" bindtap="nextMonth">›</text>
+      </view>
+      <view class="heat-sub">{{monthTitle}}</view>
+
+      <view class="heat-weekdays">
+        <text class="heat-wd" wx:for="{{weekdayLabels}}" wx:key="*this">{{item}}</text>
+      </view>
+
+      <view class="heat-week" wx:for="{{heatWeeks}}" wx:key="index" wx:for-item="week">
+        <view class="heat-cell" wx:for="{{week}}" wx:key="index" wx:for-item="cell">
+          <view class="heat-box" wx:if="{{cell.day === 0}}"></view>
+          <view
+            wx:else
+            class="heat-box filled"
+            style="background: {{cell.minutes > 0 ? '#E07A5F' : '#EAF1E2'}}; opacity: {{cell.minutes > 0 ? cell.opacity : 1}};"
+          ><text class="heat-dur" wx:if="{{cell.minutes > 0}}">{{cell.text}}</text></view>
+          <text class="heat-day">{{cell.day > 0 ? cell.day : ''}}</text>
+        </view>
+      </view>
+
+      <view class="heat-legend">
+        <text class="heat-lg-text">少</text>
+        <view class="heat-lg" style="opacity:0.25"></view>
+        <view class="heat-lg" style="opacity:0.6"></view>
+        <view class="heat-lg"></view>
+        <text class="heat-lg-text">多</text>
+      </view>
+    </view>
+  </view>
 </view>

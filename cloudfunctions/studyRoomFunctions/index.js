@@ -2,6 +2,8 @@ const { db } = require("./cloudbase");
 const { hashPassword, verifyPassword } = require("./password");
 const { verifyToken } = require("./token");
 const auth = require("./auth");
+const data = require("./data");
+const ai = require("./ai");
 const { now, ok, fail, toPositiveInt, isValidRoomId, resolveRole, roleAdmin } = require("./utils");
 
 const DEFAULT_PAGE_SIZE = 20;
@@ -51,11 +53,77 @@ function publicRoom(row, extra) {
       name: row.name,
       owner_id: row.owner_id,
       need_password: Boolean(row.password_hash),
+      join_code: row.join_code || "",
+      daily_min: row.daily_min != null ? row.daily_min : 30,
       created_at: row.created_at,
       updated_at: row.updated_at,
     },
     extra || {}
   );
+}
+
+function pad2(n) {
+  return n < 10 ? "0" + n : "" + n;
+}
+
+function dateKeyOf(ts) {
+  const d = new Date(ts);
+  return d.getFullYear() + "-" + pad2(d.getMonth() + 1) + "-" + pad2(d.getDate());
+}
+
+function parseFocusDays(value) {
+  if (!value) return {};
+  if (typeof value === "string") {
+    try {
+      const obj = JSON.parse(value);
+      return obj && typeof obj === "object" ? obj : {};
+    } catch (error) {
+      return {};
+    }
+  }
+  return typeof value === "object" ? value : {};
+}
+
+function statsFromFocusDays(fd) {
+  const keys = Object.keys(fd);
+  let total = 0;
+  keys.forEach((k) => {
+    total += Number(fd[k]) || 0;
+  });
+  const today = dateKeyOf(now());
+  let streak = 0;
+  for (let i = 0; i < 400; i++) {
+    const k = dateKeyOf(Date.now() - i * 86400000);
+    if ((Number(fd[k]) || 0) > 0) {
+      streak += 1;
+    } else if (i === 0) {
+      continue;
+    } else {
+      break;
+    }
+  }
+  return {
+    today_minutes: Number(fd[today] || 0),
+    focus_minutes: total,
+    total_days: keys.length,
+    streak_days: streak,
+  };
+}
+
+function memberView(m) {
+  const st = statsFromFocusDays(parseFocusDays(m.focus_days));
+  return {
+    user_id: m.user_id,
+    role: m.role,
+    nickname: m.nickname || "",
+    joined_at: m.joined_at,
+    last_active_at: m.last_active_at,
+    focusing: m.focusing ? 1 : 0,
+    today_minutes: st.today_minutes,
+    focus_minutes: st.focus_minutes,
+    total_days: st.total_days,
+    streak_days: st.streak_days,
+  };
 }
 
 function decorateComment(row, userId, isAdmin) {
@@ -73,7 +141,7 @@ async function fetchRoomRow(roomId) {
   return selectOne(
     db
       .from("rooms_self")
-      .select("room_no,name,owner_id,password_hash,password_salt,is_deleted,created_at,updated_at")
+      .select("room_no,join_code,daily_min,name,owner_id,password_hash,password_salt,is_deleted,created_at,updated_at")
       .eq("room_no", roomId)
       .eq("is_deleted", 0)
       .limit(1)
@@ -113,6 +181,17 @@ async function generateRoomId() {
   throw new Error("房间号生成失败，请重试");
 }
 
+async function generateJoinCode() {
+  const chars = "ABCDEFGHJKMNPQRSTUVWXYZ23456789";
+  for (let i = 0; i < 20; i++) {
+    let code = "";
+    for (let j = 0; j < 8; j++) code += chars[Math.floor(Math.random() * chars.length)];
+    const exist = await selectRows(db.from("rooms_self").select("room_no").eq("join_code", code).limit(1));
+    if (!exist.length) return code;
+  }
+  throw new Error("加入码生成失败，请重试");
+}
+
 async function roomCreate(params, ctx) {
   const userId = ctx.userId || "";
   if (!userId) return fail("未获取到用户身份，请稍后重试", "NO_USER");
@@ -124,7 +203,12 @@ async function roomCreate(params, ctx) {
   const password = params.password ? String(params.password) : "";
   if (password.length > 32) return fail("房间密码不能超过 32 位", "PASSWORD_TOO_LONG");
 
+  const dailyParsed = parseInt(params.dailyMin, 10);
+  const dailyMin = Number.isFinite(dailyParsed) && dailyParsed >= 0 ? dailyParsed : 30;
+  const nickname = String(params.nickname || "").slice(0, 50);
+
   const roomId = await generateRoomId();
+  const joinCode = await generateJoinCode();
   const timestamp = now();
   let hash = null;
   let salt = null;
@@ -138,6 +222,8 @@ async function roomCreate(params, ctx) {
     db.from("rooms_self").insert([
       {
         room_no: roomId,
+        join_code: joinCode,
+        daily_min: dailyMin,
         name,
         owner_id: userId,
         password_hash: hash,
@@ -151,31 +237,57 @@ async function roomCreate(params, ctx) {
 
   await run(
     db.from("room_members_self").insert([
-      { room_id: roomId, user_id: userId, role: "owner", joined_at: timestamp, last_active_at: timestamp },
+      {
+        room_id: roomId,
+        user_id: userId,
+        role: "owner",
+        nickname,
+        joined_at: timestamp,
+        last_active_at: timestamp,
+        focus_days: "{}",
+        focusing: 0,
+      },
     ])
   );
 
-  return ok({
-    id: roomId,
-    name,
-    owner_id: userId,
-    need_password: Boolean(hash),
-    created_at: timestamp,
-    updated_at: timestamp,
-    role: "owner",
-    member_count: 1,
-  });
+  return ok(
+    publicRoom(
+      {
+        room_no: roomId,
+        join_code: joinCode,
+        daily_min: dailyMin,
+        name,
+        owner_id: userId,
+        password_hash: hash,
+        created_at: timestamp,
+        updated_at: timestamp,
+      },
+      { role: "owner", member_count: 1, my_focus_minutes: 0 }
+    )
+  );
 }
 
 async function roomJoin(params, ctx) {
   const userId = ctx.userId || "";
   if (!userId) return fail("未获取到用户身份，请稍后重试", "NO_USER");
 
-  const roomId = String(params.roomId || "").trim();
-  if (!roomId) return fail("请输入房间号", "MISSING_ROOM_ID");
-  if (!isValidRoomId(roomId)) return fail("房间号不正确", "INVALID_ROOM_ID");
+  const code = String(params.roomId || "").trim();
+  if (!code) return fail("请输入房间号或加入码", "MISSING_ROOM_ID");
 
-  const room = await fetchRoomRow(roomId);
+  let room = null;
+  if (isValidRoomId(code)) {
+    room = await fetchRoomRow(code);
+  }
+  if (!room) {
+    room = await selectOne(
+      db
+        .from("rooms_self")
+        .select("room_no,join_code,daily_min,name,owner_id,password_hash,password_salt,is_deleted,created_at,updated_at")
+        .eq("join_code", code.toUpperCase())
+        .eq("is_deleted", 0)
+        .limit(1)
+    );
+  }
   if (!room) return fail("房间不存在或已解散", "ROOM_NOT_FOUND");
 
   if (room.password_hash) {
@@ -183,23 +295,33 @@ async function roomJoin(params, ctx) {
     if (!passed) return fail("房间密码不正确", "WRONG_PASSWORD");
   }
 
+  const roomNo = room.room_no;
+  const nickname = String(params.nickname || "").slice(0, 50);
   const existing = await selectRows(
-    db
-      .from("room_members_self")
-      .select("role")
-      .eq("room_id", roomId)
-      .eq("user_id", userId)
-      .limit(1)
+    db.from("room_members_self").select("role").eq("room_id", roomNo).eq("user_id", userId).limit(1)
   );
 
   if (!existing.length) {
     await run(
       db.from("room_members_self").insert([
-        { room_id: roomId, user_id: userId, role: "member", joined_at: now(), last_active_at: now() },
+        {
+          room_id: roomNo,
+          user_id: userId,
+          role: "member",
+          nickname,
+          joined_at: now(),
+          last_active_at: now(),
+          focus_days: "{}",
+          focusing: 0,
+        },
       ])
     );
+  } else if (nickname) {
+    await run(
+      db.from("room_members_self").update({ nickname, last_active_at: now() }).eq("room_id", roomNo).eq("user_id", userId)
+    );
   } else {
-    await touchActive(roomId, userId);
+    await touchActive(roomNo, userId);
   }
 
   const role = existing.length ? existing[0].role : "member";
@@ -213,7 +335,7 @@ async function roomListMine(params, ctx) {
   const memberships = await selectRows(
     db
       .from("room_members_self")
-      .select("room_id,role,joined_at")
+      .select("room_id,role,joined_at,focus_days")
       .eq("user_id", userId)
       .order("joined_at", { ascending: false })
   );
@@ -223,7 +345,7 @@ async function roomListMine(params, ctx) {
   const rooms = await selectRows(
     db
       .from("rooms_self")
-      .select("room_no,name,owner_id,password_hash,is_deleted,created_at,updated_at")
+      .select("room_no,join_code,daily_min,name,owner_id,password_hash,is_deleted,created_at,updated_at")
       .in("room_no", roomIds)
       .eq("is_deleted", 0)
   );
@@ -241,8 +363,10 @@ async function roomListMine(params, ctx) {
     }
   });
   const roleByRoom = {};
+  const myFocus = {};
   memberships.forEach((item) => {
     roleByRoom[item.room_id] = item.role;
+    myFocus[item.room_id] = statsFromFocusDays(parseFocusDays(item.focus_days)).focus_minutes;
   });
   const roomById = {};
   rooms.forEach((room) => {
@@ -257,6 +381,7 @@ async function roomListMine(params, ctx) {
         role: roleByRoom[id] || "member",
         member_count: counts[id] || 0,
         online_count: online[id] || 0,
+        my_focus_minutes: myFocus[id] || 0,
       });
     })
     .filter(Boolean);
@@ -273,28 +398,32 @@ async function roomGet(params, ctx) {
   const room = await fetchRoomRow(roomId);
   if (!room) return fail("房间不存在或已解散", "ROOM_NOT_FOUND");
 
-  const members = await selectRows(
+  const membersRaw = await selectRows(
     db
       .from("room_members_self")
-      .select("user_id,role,joined_at,last_active_at")
+      .select("user_id,role,nickname,joined_at,last_active_at,focus_days,focusing")
       .eq("room_id", roomId)
       .order("joined_at", { ascending: true })
   );
-  const mine = members.find((item) => item.user_id === userId);
+  const mine = membersRaw.find((item) => item.user_id === userId);
   if (!mine) return fail("你不是该房间成员", "NOT_MEMBER");
 
   await touchActive(roomId, userId);
 
-  const threshold = now() - ONLINE_WINDOW_MS;
-  const onlineCount = members.filter(
-    (item) => item.last_active_at && Number(item.last_active_at) >= threshold
-  ).length;
+  const members = membersRaw
+    .map(memberView)
+    .sort((a, b) => b.focus_minutes - a.focus_minutes || a.joined_at - b.joined_at);
+  const focusingCount = members.filter((m) => m.focusing === 1).length;
+  const myRank = members.findIndex((m) => m.user_id === userId) + 1;
+  const me = members.find((m) => m.user_id === userId);
 
   return ok(
     publicRoom(room, {
       role: mine.role,
       member_count: members.length,
-      online_count: onlineCount,
+      focusing_count: focusingCount,
+      my_rank: myRank,
+      my_focus_minutes: me ? me.focus_minutes : 0,
       members,
     })
   );
@@ -331,6 +460,63 @@ async function roomDelete(params, ctx) {
     db.from("comments_self").update({ is_deleted: 1, updated_at: timestamp }).eq("project_id", roomId)
   );
   return ok({ roomId });
+}
+
+async function roomKick(params, ctx) {
+  const userId = ctx.userId || "";
+  const roomId = String(params.roomId || "").trim();
+  const target = String(params.targetUserId || params.userId || "").trim();
+  if (!isValidRoomId(roomId)) return fail("房间号不正确", "INVALID_ROOM_ID");
+  if (!target) return fail("缺少成员", "MISSING_TARGET");
+
+  const room = await fetchRoomRow(roomId);
+  if (!room) return fail("房间不存在或已解散", "ROOM_NOT_FOUND");
+  if (room.owner_id !== userId) return fail("只有房主可以移出成员", "FORBIDDEN");
+  if (target === userId) return fail("不能移出自己", "INVALID_TARGET");
+
+  await run(db.from("room_members_self").delete().eq("room_id", roomId).eq("user_id", target));
+  return ok({ roomId, target });
+}
+
+async function roomFocusStart(params, ctx) {
+  const userId = ctx.userId || "";
+  const roomId = String(params.roomId || "").trim();
+  if (!userId || !isValidRoomId(roomId)) return ok({});
+  await run(
+    db
+      .from("room_members_self")
+      .update({ focusing: 1, last_active_at: now() })
+      .eq("room_id", roomId)
+      .eq("user_id", userId)
+  );
+  return ok({ roomId });
+}
+
+async function roomRecordFocus(params, ctx) {
+  const userId = ctx.userId || "";
+  const roomId = String(params.roomId || "").trim();
+  const minutes = Math.max(0, Math.floor(Number(params.minutes || 0)));
+  if (!userId || !isValidRoomId(roomId)) return ok({ roomId, minutes: 0 });
+
+  const m = await selectOne(
+    db.from("room_members_self").select("focus_days").eq("room_id", roomId).eq("user_id", userId).limit(1)
+  );
+  if (!m) return fail("你不是该房间成员", "NOT_MEMBER");
+
+  const fd = parseFocusDays(m.focus_days);
+  if (minutes > 0) {
+    const today = dateKeyOf(now());
+    fd[today] = (Number(fd[today]) || 0) + minutes;
+  }
+
+  await run(
+    db
+      .from("room_members_self")
+      .update({ focus_days: JSON.stringify(fd), focusing: 0, last_active_at: now() })
+      .eq("room_id", roomId)
+      .eq("user_id", userId)
+  );
+  return ok({ roomId, minutes });
 }
 
 async function commentList(params, ctx) {
@@ -439,7 +625,7 @@ async function commentAdd(params, ctx) {
           role,
           platform,
           likes: 0,
-          liked_by: [],
+          liked_by: "[]",
           is_deleted: 0,
           created_at: timestamp,
           updated_at: timestamp,
@@ -540,7 +726,7 @@ async function commentLike(params, ctx) {
   await run(
     db
       .from("comments_self")
-      .update({ likes, liked_by: likedBy, updated_at: now() })
+      .update({ likes, liked_by: JSON.stringify(likedBy), updated_at: now() })
       .eq("id", id)
       .eq("project_id", roomId)
   );
@@ -552,16 +738,29 @@ const handlers = {
   "auth.register": auth.register,
   "auth.login": auth.login,
   "auth.profile": auth.profile,
+  "data.pull": data.pull,
+  "data.saveTasks": data.saveTasks,
+  "data.saveStats": data.saveStats,
+  "data.saveProfile": data.saveProfile,
+  "data.saveRecords": data.saveRecords,
+  "data.addRecord": data.addRecord,
   "room.create": roomCreate,
   "room.join": roomJoin,
   "room.listMine": roomListMine,
   "room.get": roomGet,
   "room.leave": roomLeave,
   "room.delete": roomDelete,
+  "room.kick": roomKick,
+  "room.focusStart": roomFocusStart,
+  "room.recordFocus": roomRecordFocus,
+  "focus.start": roomFocusStart,
+  "focus.record": roomRecordFocus,
   "comment.list": commentList,
   "comment.add": commentAdd,
   "comment.delete": commentDelete,
   "comment.like": commentLike,
+  "ai.chat": ai.aiChat,
+  "ai.insight": ai.aiInsight,
 };
 
 function parseHttpEvent(event) {

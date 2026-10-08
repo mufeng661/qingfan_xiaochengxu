@@ -1,8 +1,6 @@
 {
   "usingComponents": {},
   "navigationBarTitleText": "自习室",
-  "navigationBarBackgroundColor": "#F3F6EE",
-  "navigationBarTextStyle": "black",
-  "backgroundColor": "#F3F6EE",
-  "enablePullDownRefresh": false
+  "enablePullDownRefresh": true,
+  "backgroundColor": "#F3F6EE"
 }

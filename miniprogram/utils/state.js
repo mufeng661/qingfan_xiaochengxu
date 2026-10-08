@@ -1,5 +1,6 @@
 const store = require("./store");
 const auth = require("./auth");
+const { call } = require("./api");
 
 const DEFAULT_NEXT = 3000;
 
@@ -8,23 +9,31 @@ function uid() {
   return u && u.phone ? u.phone : "guest";
 }
 
+function loggedIn() {
+  return auth.isLoggedIn();
+}
+
 function key(base) {
   return "qf_" + base + "_" + uid();
 }
 
+const DEFAULT_PROFILE = {
+  level: 1,
+  exp: 0,
+  nextLevelExp: DEFAULT_NEXT,
+  streak: 0,
+  lastSignDate: "",
+  signDates: [],
+  challengeGoal: 4,
+};
+
 function getProfile() {
-  return store.get("qf_profile_" + uid(), {
-    level: 1,
-    exp: 0,
-    nextLevelExp: DEFAULT_NEXT,
-    streak: 0,
-    lastSignDate: "",
-    signDates: [],
-  });
+  return Object.assign({}, DEFAULT_PROFILE, store.get("qf_profile_" + uid(), {}));
 }
 
 function saveProfile(p) {
   store.set("qf_profile_" + uid(), p);
+  if (loggedIn()) call("data.saveProfile", { profile: p }).catch((e) => console.error("[qf cloud]", e));
 }
 
 function getUser() {
@@ -57,6 +66,7 @@ function getTasks() {
 
 function saveTasks(list) {
   store.set(key("tasks"), list);
+  if (loggedIn()) call("data.saveTasks", { tasks: list }).catch((e) => console.error("[qf cloud]", e));
 }
 
 function getStats() {
@@ -65,14 +75,17 @@ function getStats() {
 
 function saveStats(stats) {
   store.set(key("stats"), stats);
+  if (loggedIn()) call("data.saveStats", { stats }).catch((e) => console.error("[qf cloud]", e));
 }
 
 function getGoal() {
-  return store.get(key("goal"), 4);
+  return getProfile().challengeGoal != null ? getProfile().challengeGoal : 4;
 }
 
 function saveGoal(n) {
-  store.set(key("goal"), n);
+  const p = getProfile();
+  p.challengeGoal = n;
+  saveProfile(p);
 }
 
 function getRecords() {
@@ -81,6 +94,7 @@ function getRecords() {
 
 function saveRecords(list) {
   store.set(key("records"), list);
+  if (loggedIn()) call("data.saveRecords", { records: list }).catch((e) => console.error("[qf cloud]", e));
 }
 
 function focusMinutesOf(k) {
@@ -149,6 +163,26 @@ function setTheme(t) {
   store.set("qf_theme", t);
 }
 
+let _lastPull = 0;
+
+// 从云端拉取并覆盖本地（登录后三端数据互通）
+function pullCloud(force) {
+  if (!loggedIn()) return Promise.resolve();
+  const t = Date.now();
+  if (!force && t - _lastPull < 5000) return Promise.resolve();
+  _lastPull = t;
+  return call("data.pull")
+    .then((data) => {
+      if (Array.isArray(data.tasks)) store.set(key("tasks"), data.tasks);
+      if (Array.isArray(data.records)) store.set(key("records"), data.records);
+      if (data.stats && typeof data.stats === "object") store.set(key("stats"), data.stats);
+      if (data.profile && typeof data.profile === "object" && Object.keys(data.profile).length) {
+        store.set("qf_profile_" + uid(), data.profile);
+      }
+    })
+    .catch((e) => console.error("[qf cloud]", e));
+}
+
 module.exports = {
   uid,
   getUser,
@@ -170,4 +204,5 @@ module.exports = {
   signInToday,
   getTheme,
   setTheme,
+  pullCloud,
 };

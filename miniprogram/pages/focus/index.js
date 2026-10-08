@@ -1,5 +1,6 @@
 const state = require("../../utils/state");
 const store = require("../../utils/store");
+const { call } = require("../../utils/api");
 
 const BACKGROUNDS = [
   { key: "sky", name: "天空", from: "#3E7BB5", to: "#86BCE4" },
@@ -152,6 +153,7 @@ Page({
   startTimer() {
     if (this.data.running) return;
     this.setData({ running: true, statusText: "专注进行中" });
+    this.reportRoomStart();
     this.startTs = Date.now() - this.elapsedSec * 1000;
     this.timerId = setInterval(() => {
       const elapsed = Math.floor((Date.now() - this.startTs) / 1000);
@@ -173,6 +175,34 @@ Page({
     if (this.data.running) {
       this.setData({ running: false, statusText: this.elapsedSec > 0 ? "已暂停" : "准备开始" });
     }
+  },
+
+  reportRoomStart() {
+    call("room.listMine")
+      .then((data) => {
+        const list = data.list || [];
+        if (!list.length) return null;
+        this._roomId = list[0].id;
+        return call("focus.start", { roomId: this._roomId });
+      })
+      .catch(() => {});
+  },
+
+  reportRoomFocus(minutes) {
+    const doRecord = (roomId) => call("focus.record", { roomId, minutes }).catch(() => {});
+    if (this._roomId) {
+      doRecord(this._roomId);
+      return;
+    }
+    call("room.listMine")
+      .then((data) => {
+        const list = data.list || [];
+        if (list.length) {
+          this._roomId = list[0].id;
+          doRecord(this._roomId);
+        }
+      })
+      .catch(() => {});
   },
 
   pickBg(e) {
@@ -216,6 +246,7 @@ Page({
   finishFocus(success, reason) {
     this.pauseTimer();
     const elapsedMin = Math.floor(this.elapsedSec / 60);
+    this.reportRoomFocus(elapsedMin);
     const today = store.todayKey();
 
     const stats = state.getStats();

@@ -1,5 +1,6 @@
 const { call } = require("../../utils/api");
 const { setSession } = require("../../utils/auth");
+const state = require("../../utils/state");
 
 Page({
   data: {
@@ -88,6 +89,7 @@ Page({
     call("auth.login", { phone: this.data.phone, password: this.data.password })
       .then((data) => {
         setSession(data.token, data.user);
+        state.pullCloud(true);
         this.setData({ loading: false });
         wx.showToast({ title: "登录成功" });
         setTimeout(() => this.backAfterLogin(), 600);
@@ -129,6 +131,7 @@ Page({
     })
       .then((data) => {
         setSession(data.token, data.user);
+        state.pullCloud(true);
         this.setData({ loading: false });
         wx.showToast({ title: "注册成功" });
         setTimeout(() => this.backAfterLogin(), 700);
