@@ -10,6 +10,7 @@ function fmt(ts) {
 
 Page({
   data: {
+    theme: "green",
     loggedIn: false,
     loading: false,
     roomError: "",
@@ -55,8 +56,11 @@ Page({
 
   onShow() {
     if (typeof this.getTabBar === "function" && this.getTabBar()) {
-      this.getTabBar().setData({ selected: 1 });
+      this.getTabBar().setData({ selected: 1, theme: wx.getStorageSync("qf_theme") || "green" });
     }
+    const tk = wx.getStorageSync("qf_theme") || "green";
+    this.setData({ theme: tk });
+    require("../../utils/theme").apply(tk);
     this.refresh();
   },
 

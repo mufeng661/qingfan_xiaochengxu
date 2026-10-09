@@ -1,0 +1,57 @@
+<!--pages/ai/index.wxml-->
+<view class="page theme-{{theme}}">
+  <view class="header">
+    <text class="back" bindtap="goBack">‹</text>
+    <view class="ai-badge">AI</view>
+    <view class="header-txt">
+      <view class="ai-name">青番 AI</view>
+      <view class="ai-status"><text class="dot"></text>在线 · 随时为你服务</view>
+    </view>
+    <text class="clear" bindtap="clearHistory">🗑</text>
+  </view>
+
+  <scroll-view class="chat" scroll-y scroll-into-view="{{toView}}" scroll-with-animation>
+    <view class="msg-item" wx:for="{{messages}}" wx:key="index" id="msg-{{index}}">
+      <block wx:if="{{item.role === 'ai'}}">
+        <view class="bubble-row left">
+          <view class="msg-avatar">AI</view>
+          <view class="bubble ai">
+            <view class="bubble-text">{{item.text}}</view>
+            <view class="bubble-action" wx:if="{{item.action}}">✓ {{item.action}}</view>
+          </view>
+        </view>
+      </block>
+      <block wx:else>
+        <view class="bubble-row right">
+          <view class="bubble me">{{item.text}}</view>
+        </view>
+      </block>
+    </view>
+
+    <view class="msg-item" wx:if="{{aiBusy}}">
+      <view class="bubble-row left">
+        <view class="msg-avatar">AI</view>
+        <view class="thinking">正在思考…</view>
+      </view>
+    </view>
+    <view class="chat-bottom"></view>
+  </scroll-view>
+
+  <view class="suggest-wrap">
+    <view class="suggest-label">试试这些 AI 能力</view>
+    <scroll-view class="suggest-scroll" scroll-x>
+      <view class="suggest-row">
+        <view class="suggest" wx:for="{{suggestions}}" wx:key="title" data-index="{{index}}" bindtap="onSuggestion">
+          <view class="suggest-icon">{{item.icon}}</view>
+          <view class="suggest-title">{{item.title}}</view>
+          <view class="suggest-desc">{{item.desc}}</view>
+        </view>
+      </view>
+    </scroll-view>
+  </view>
+
+  <view class="input-row">
+    <input class="chat-input" placeholder="问问 AI 你的专注情况…" placeholder-class="ph" value="{{input}}" bindinput="onInput" confirm-type="send" bindconfirm="send" />
+    <view class="send-btn" bindtap="send">➤</view>
+  </view>
+</view>

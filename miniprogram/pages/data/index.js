@@ -10,6 +10,7 @@ const PALETTE = ["#6E9B57", "#E07A5F", "#D9A441", "#4C7A3E", "#84917D", "#F6E1D6
 
 Page({
   data: {
+    theme: "green",
     pieRange: "week",
     monthOffset: 0,
     showHeat: false,
@@ -42,9 +43,12 @@ Page({
 
   onShow() {
     if (typeof this.getTabBar === "function" && this.getTabBar()) {
-      this.getTabBar().setData({ selected: 3 });
+      this.getTabBar().setData({ selected: 3, theme: wx.getStorageSync("qf_theme") || "green" });
     }
-    state.pullCloud().then(() => this.refresh());
+    const tk = wx.getStorageSync("qf_theme") || "green";
+    this.setData({ theme: tk });
+    require("../../utils/theme").apply(tk);
+    state.pullCloud(true).then(() => this.refresh());
   },
 
   onReady() {

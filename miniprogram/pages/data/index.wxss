@@ -1,13 +1,14 @@
 /**pages/data/index.wxss**/
 page {
-  background-color: #f3f6ee;
+  background-color: var(--bg);
 }
 
 .page {
   display: flex;
   flex-direction: column;
-  height: calc(100vh - 110rpx - env(safe-area-inset-bottom));
-  background-color: #f3f6ee;
+  height: 100vh;
+  box-sizing: border-box;
+  background-color: var(--bg);
 }
 
 .header {
@@ -17,18 +18,19 @@ page {
 .title {
   font-family: serif;
   font-size: 48rpx;
-  color: #2c3a28;
+  color: var(--ink);
 }
 
 .scroll {
   flex: 1;
   padding: 0 44rpx;
   box-sizing: border-box;
+  background-color: var(--bg);
 }
 
 .card {
-  background-color: #ffffff;
-  border: 2rpx solid #e3e9db;
+  background-color: var(--surface);
+  border: 2rpx solid var(--line);
   border-radius: 32rpx;
   padding: 32rpx;
   margin-bottom: 24rpx;
@@ -37,7 +39,7 @@ page {
 .card-title {
   font-family: serif;
   font-size: 29rpx;
-  color: #2c3a28;
+  color: var(--ink);
   margin-bottom: 20rpx;
 }
 
@@ -54,7 +56,7 @@ page {
 
 .card-sub {
   font-size: 22rpx;
-  color: #b4bfae;
+  color: var(--ink3);
 }
 
 .stat-row {
@@ -74,20 +76,20 @@ page {
 }
 
 .stat-val.tomato {
-  color: #e07a5f;
+  color: var(--tomato);
 }
 
 .stat-val.leaf {
-  color: #4c7a3e;
+  color: var(--leafDeep);
 }
 
 .stat-val.gold {
-  color: #d9a441;
+  color: var(--gold);
 }
 
 .stat-label {
   font-size: 22rpx;
-  color: #b4bfae;
+  color: var(--ink3);
   margin-top: 8rpx;
 }
 
@@ -98,21 +100,21 @@ page {
 
 .pill {
   font-size: 24rpx;
-  color: #84917d;
+  color: var(--ink2);
   padding: 8rpx 20rpx;
   border-radius: 198rpx;
-  border: 2rpx solid #e3e9db;
+  border: 2rpx solid var(--line);
 }
 
 .pill.active {
   color: #ffffff;
-  background-color: #6e9b57;
-  border-color: #6e9b57;
+  background-color: var(--leaf);
+  border-color: var(--leaf);
 }
 
 .empty-line {
   font-size: 24rpx;
-  color: #b4bfae;
+  color: var(--ink3);
   padding: 20rpx 0;
 }
 
@@ -151,7 +153,7 @@ page {
   flex: 1;
   min-width: 0;
   font-size: 23rpx;
-  color: #2c3a28;
+  color: var(--ink);
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
@@ -159,7 +161,7 @@ page {
 
 .legend-pct {
   font-size: 22rpx;
-  color: #b4bfae;
+  color: var(--ink3);
   flex: none;
 }
 
@@ -173,13 +175,13 @@ page {
   font-family: serif;
   font-size: 29rpx;
   font-weight: 500;
-  color: #e07a5f;
+  color: var(--tomato);
 }
 
 .month-label {
   font-size: 26rpx;
   font-weight: 500;
-  color: #e07a5f;
+  color: var(--tomato);
   margin-left: 12rpx;
 }
 
@@ -189,18 +191,18 @@ page {
 
 .month-icon {
   font-size: 34rpx;
-  color: #b4bfae;
+  color: var(--ink3);
   padding: 0 16rpx;
 }
 
 .month-nav {
   font-size: 40rpx;
-  color: #e07a5f;
+  color: var(--tomato);
   padding: 0 12rpx;
 }
 
 .month-nav.disabled {
-  color: #e3e9db;
+  color: var(--line);
 }
 
 .chart-row {
@@ -220,7 +222,7 @@ page {
 
 .axis-label {
   font-size: 20rpx;
-  color: #b4bfae;
+  color: var(--ink3);
 }
 
 .chart-scroll {
@@ -246,7 +248,7 @@ page {
   width: 44px;
   text-align: center;
   font-size: 20rpx;
-  color: #b4bfae;
+  color: var(--ink3);
 }
 
 .bar-item {
@@ -258,7 +260,7 @@ page {
 .bar-name {
   width: 144rpx;
   font-size: 23rpx;
-  color: #2c3a28;
+  color: var(--ink);
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
@@ -269,26 +271,26 @@ page {
   flex: 1;
   height: 28rpx;
   border-radius: 14rpx;
-  background-color: #eaf1e2;
+  background-color: var(--surface2);
   overflow: hidden;
 }
 
 .bar-fill {
   height: 28rpx;
   border-radius: 14rpx;
-  background-color: #e07a5f;
+  background-color: var(--tomato);
 }
 
 .bar-count {
   width: 48rpx;
   text-align: right;
   font-size: 22rpx;
-  color: #b4bfae;
+  color: var(--ink3);
   flex: none;
 }
 
 .ai-card {
-  background-color: #dce8cf;
+  background-color: var(--leafSoft);
   border-radius: 32rpx;
   padding: 32rpx;
   margin-bottom: 32rpx;
@@ -305,7 +307,7 @@ page {
   width: 44rpx;
   height: 44rpx;
   border-radius: 14rpx;
-  background-color: #6e9b57;
+  background-color: var(--leaf);
   color: #ffffff;
   font-family: serif;
   font-size: 24rpx;
@@ -317,17 +319,17 @@ page {
 .ai-title {
   font-family: serif;
   font-size: 29rpx;
-  color: #2c3a28;
+  color: var(--ink);
 }
 
 .ai-text {
   font-size: 25rpx;
   line-height: 42rpx;
-  color: #2c3a28;
+  color: var(--ink);
 }
 
 .bottom-space {
-  height: 40rpx;
+  height: 220rpx;
 }
 
 /* 热力图 */
@@ -347,7 +349,7 @@ page {
 .heat-modal {
   width: 86%;
   padding: 40rpx;
-  background-color: #ffffff;
+  background-color: var(--surface);
   border-radius: 40rpx;
   box-sizing: border-box;
 }
@@ -362,12 +364,12 @@ page {
   font-family: serif;
   font-size: 36rpx;
   font-weight: bold;
-  color: #2c3a28;
+  color: var(--ink);
 }
 
 .heat-sub {
   font-size: 26rpx;
-  color: #b4bfae;
+  color: var(--ink3);
   text-align: center;
   margin: 12rpx 0 24rpx;
 }
@@ -381,7 +383,7 @@ page {
   flex: 1;
   text-align: center;
   font-size: 20rpx;
-  color: #b4bfae;
+  color: var(--ink3);
 }
 
 .heat-week {
@@ -414,7 +416,7 @@ page {
 
 .heat-day {
   font-size: 20rpx;
-  color: #b4bfae;
+  color: var(--ink3);
   margin-top: 6rpx;
   height: 28rpx;
 }
@@ -429,12 +431,12 @@ page {
 
 .heat-lg-text {
   font-size: 20rpx;
-  color: #b4bfae;
+  color: var(--ink3);
 }
 
 .heat-lg {
   width: 20rpx;
   height: 20rpx;
   border-radius: 6rpx;
-  background-color: #e07a5f;
+  background-color: var(--tomato);
 }

@@ -1,5 +1,5 @@
 <!--index.wxml-->
-<view class="page">
+<view class="page theme-{{theme}}">
   <block wx:if="{{loggedIn}}">
     <view class="header">
       <view class="header-left">

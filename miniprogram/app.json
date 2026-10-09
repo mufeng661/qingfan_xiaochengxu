@@ -6,6 +6,8 @@
     "pages/data/index",
     "pages/me/index",
     "pages/login/index",
+    "pages/ai/index",
+    "pages/help/index",
     "pages/focus/index",
     "pages/complete/index",
     "pages/room/index",

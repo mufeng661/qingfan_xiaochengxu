@@ -1,13 +1,14 @@
 /**pages/stats/index.wxss**/
 page {
-  background-color: #f3f6ee;
+  background-color: var(--bg);
 }
 
 .page {
   display: flex;
   flex-direction: column;
-  height: calc(100vh - 110rpx - env(safe-area-inset-bottom));
-  background-color: #f3f6ee;
+  height: 100vh;
+  box-sizing: border-box;
+  background-color: var(--bg);
 }
 
 .header {
@@ -20,7 +21,7 @@ page {
 .title {
   font-family: serif;
   font-size: 48rpx;
-  color: #2c3a28;
+  color: var(--ink);
 }
 
 .range {
@@ -30,28 +31,29 @@ page {
 
 .pill {
   font-size: 25rpx;
-  color: #84917d;
+  color: var(--ink2);
   padding: 12rpx 26rpx;
   border-radius: 198rpx;
-  border: 2rpx solid #e3e9db;
+  border: 2rpx solid var(--line);
 }
 
 .pill.active {
   color: #ffffff;
-  background-color: #6e9b57;
-  border-color: #6e9b57;
+  background-color: var(--leaf);
+  border-color: var(--leaf);
 }
 
 .scroll {
   flex: 1;
   padding: 0 44rpx;
   box-sizing: border-box;
+  background-color: var(--bg);
 }
 
 .range-title {
   font-family: serif;
   font-size: 32rpx;
-  color: #2c3a28;
+  color: var(--ink);
   margin: 8rpx 0 28rpx;
 }
 
@@ -68,13 +70,13 @@ page {
 
 .empty-text {
   font-size: 25rpx;
-  color: #84917d;
+  color: var(--ink2);
   margin-top: 16rpx;
 }
 
 .empty-hint {
   font-size: 22rpx;
-  color: #b4bfae;
+  color: var(--ink3);
   margin-top: 8rpx;
 }
 
@@ -99,20 +101,20 @@ page {
   width: 28rpx;
   height: 28rpx;
   border-radius: 50%;
-  background-color: #ffffff;
-  border: 6rpx solid #e07a5f;
+  background-color: var(--surface);
+  border: 6rpx solid var(--tomato);
   box-sizing: border-box;
   margin-top: 6rpx;
 }
 
 .tl-dot.aborted {
-  border-color: #b4bfae;
+  border-color: var(--ink3);
 }
 
 .tl-bar {
   flex: 1;
   width: 3rpx;
-  background-color: #dce8cf;
+  background-color: var(--leafSoft);
   margin-top: 6rpx;
 }
 
@@ -134,7 +136,7 @@ page {
   min-width: 0;
   font-size: 27rpx;
   font-weight: 500;
-  color: #2c3a28;
+  color: var(--ink);
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
@@ -142,17 +144,17 @@ page {
 
 .tl-time {
   font-size: 22rpx;
-  color: #b4bfae;
+  color: var(--ink3);
   flex: none;
   padding-left: 16rpx;
 }
 
 .tl-meta {
   font-size: 22rpx;
-  color: #84917d;
+  color: var(--ink2);
   margin-top: 8rpx;
 }
 
 .bottom-space {
-  height: 40rpx;
+  height: 220rpx;
 }

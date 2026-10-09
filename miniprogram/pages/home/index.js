@@ -3,6 +3,7 @@ const store = require("../../utils/store");
 
 Page({
   data: {
+    theme: "green",
     greeting: "",
     dateStr: "",
     nickname: "",
@@ -29,12 +30,26 @@ Page({
 
   onShow() {
     if (typeof this.getTabBar === "function" && this.getTabBar()) {
-      this.getTabBar().setData({ selected: 0 });
+      this.getTabBar().setData({ selected: 0, theme: wx.getStorageSync("qf_theme") || "green" });
     }
-    state.pullCloud().then(() => this.refresh());
+    const tk = wx.getStorageSync("qf_theme") || "green";
+    this.setData({ theme: tk });
+    require("../../utils/theme").apply(tk);
+    state.pullCloud(true).then(() => this.refresh());
+  },
+
+  onPullDownRefresh() {
+    state.pullCloud(true).then(() => {
+      this.refresh();
+      wx.stopPullDownRefresh();
+    });
   },
 
   noop() {},
+
+  goAi() {
+    wx.navigateTo({ url: "/pages/ai/index" });
+  },
 
   refresh() {
     const user = state.getUser();

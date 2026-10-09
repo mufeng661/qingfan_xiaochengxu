@@ -14,6 +14,7 @@ const EMPTY = { day: "今天还没有完成记录", week: "本周还没有完成
 
 Page({
   data: {
+    theme: "green",
     range: "day",
     rangeTitle: TITLES.day,
     emptyHint: EMPTY.day,
@@ -22,9 +23,12 @@ Page({
 
   onShow() {
     if (typeof this.getTabBar === "function" && this.getTabBar()) {
-      this.getTabBar().setData({ selected: 2 });
+      this.getTabBar().setData({ selected: 2, theme: wx.getStorageSync("qf_theme") || "green" });
     }
-    state.pullCloud().then(() => this.refresh());
+    const tk = wx.getStorageSync("qf_theme") || "green";
+    this.setData({ theme: tk });
+    require("../../utils/theme").apply(tk);
+    state.pullCloud(true).then(() => this.refresh());
   },
 
   onPullDownRefresh() {

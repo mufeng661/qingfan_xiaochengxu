@@ -1,0 +1,96 @@
+/**pages/help/index.wxss**/
+page {
+  background-color: #f3f6ee;
+}
+
+.page {
+  min-height: 100vh;
+  box-sizing: border-box;
+  background-color: var(--bg);
+  padding-bottom: 60rpx;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  padding: 32rpx 44rpx 20rpx;
+}
+
+.back {
+  font-size: 48rpx;
+  color: var(--ink);
+  padding-right: 8rpx;
+}
+
+.title {
+  font-family: serif;
+  font-size: 40rpx;
+  color: var(--ink);
+}
+
+.faq-list {
+  padding: 0 44rpx;
+}
+
+.faq-item {
+  background-color: var(--surface);
+  border: 2rpx solid var(--line);
+  border-radius: 28rpx;
+  padding: 28rpx 32rpx;
+  margin-bottom: 20rpx;
+}
+
+.faq-q {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+}
+
+.faq-index {
+  width: 40rpx;
+  height: 40rpx;
+  border-radius: 12rpx;
+  background-color: var(--leafSoft);
+  color: var(--leafDeep);
+  font-size: 24rpx;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+}
+
+.faq-q-text {
+  flex: 1;
+  min-width: 0;
+  font-size: 28rpx;
+  font-weight: 500;
+  color: var(--ink);
+}
+
+.faq-arrow {
+  font-size: 36rpx;
+  color: var(--ink3);
+  flex: none;
+}
+
+.faq-a {
+  margin-top: 20rpx;
+  padding-left: 56rpx;
+  font-size: 25rpx;
+  line-height: 42rpx;
+  color: var(--ink2);
+}
+
+.footer {
+  text-align: center;
+  font-size: 22rpx;
+  color: var(--ink3);
+  margin-top: 20rpx;
+  padding: 0 44rpx;
+}
+
+.bottom-space {
+  height: 40rpx;
+}

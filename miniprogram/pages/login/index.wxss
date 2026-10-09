@@ -74,8 +74,10 @@ page {
   align-items: center;
   height: 100rpx;
   padding: 0 32rpx;
-  background-color: #ffffff;
-  border: 2rpx solid #e3e9db;
+  background-color: rgba(255, 255, 255, 0.6);
+  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(20px);
+  border: 2rpx solid rgba(255, 255, 255, 0.7);
   border-radius: 28rpx;
   margin-top: 24rpx;
   box-sizing: border-box;

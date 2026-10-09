@@ -20,8 +20,83 @@ button::after{
 
 
 page {
-  background: #f6f6f6;
+  background: #f3f6ee;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
+}
+
+/* ===== 主题令牌（换肤） ===== */
+.theme-green {
+  --bg: #f3f6ee;
+  --surface: #ffffff;
+  --surface2: #eaf1e2;
+  --ink: #2c3a28;
+  --ink2: #84917d;
+  --ink3: #b4bfae;
+  --leaf: #6e9b57;
+  --leafDeep: #4c7a3e;
+  --leafSoft: #dce8cf;
+  --tomato: #e07a5f;
+  --tomatoSoft: #f6e1d6;
+  --line: #e3e9db;
+  --gold: #d9a441;
+  --goldSoft: #f4e8ce;
+}
+.theme-dark {
+  --bg: #f5f2f9;
+  --surface: #ffffff;
+  --surface2: #ece6f4;
+  --ink: #38304a;
+  --ink2: #8b7fa0;
+  --ink3: #beb3ce;
+  --leaf: #8e7cc3;
+  --leafDeep: #6e5ca6;
+  --leafSoft: #e6def3;
+  --tomato: #e07a5f;
+  --tomatoSoft: #f6e1d6;
+  --line: #e8e1f0;
+  --gold: #d9a441;
+  --goldSoft: #f4e8ce;
+}
+.theme-dawn {
+  --bg: #fbf3e9;
+  --surface: #fffdf9;
+  --surface2: #f3e7d7;
+  --ink: #4a3a2b;
+  --ink2: #9a8a76;
+  --ink3: #c4b5a2;
+  --leaf: #c08a4e;
+  --leafDeep: #a8743c;
+  --leafSoft: #efdfc6;
+  --tomato: #d96b4e;
+  --tomatoSoft: #f6e1d6;
+  --line: #ede0ce;
+  --gold: #d9a441;
+  --goldSoft: #f4e8ce;
+}
+.theme-ocean {
+  --bg: #eef3f6;
+  --surface: #ffffff;
+  --surface2: #e2ecf2;
+  --ink: #26343f;
+  --ink2: #7c8e9a;
+  --ink3: #aebfc8;
+  --leaf: #5c8ba6;
+  --leafDeep: #42718c;
+  --leafSoft: #d8e6ee;
+  --tomato: #e07a5f;
+  --tomatoSoft: #f6e1d6;
+  --line: #dee8ee;
+  --gold: #d9a441;
+  --goldSoft: #f4e8ce;
+}
+
+/* 毛玻璃底：半透明表面色 */
+.theme-green,
+.theme-dark,
+.theme-dawn,
+.theme-ocean {
+  --glass: rgba(255, 255, 255, 0.72);
+  --glass-border: rgba(255, 255, 255, 0.6);
 }

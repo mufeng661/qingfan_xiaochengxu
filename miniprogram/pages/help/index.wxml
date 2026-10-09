@@ -1,0 +1,21 @@
+<!--pages/help/index.wxml-->
+<view class="page theme-{{theme}}">
+  <view class="header">
+    <text class="back" bindtap="goBack">‹</text>
+    <text class="title">帮助与常见问题</text>
+  </view>
+
+  <view class="faq-list">
+    <view class="faq-item" wx:for="{{faqs}}" wx:key="q" data-index="{{index}}" bindtap="toggle">
+      <view class="faq-q">
+        <text class="faq-index">Q</text>
+        <text class="faq-q-text">{{item.q}}</text>
+        <text class="faq-arrow">{{openIndex === index ? '−' : '+'}}</text>
+      </view>
+      <view class="faq-a" wx:if="{{openIndex === index}}">{{item.a}}</view>
+    </view>
+  </view>
+
+  <view class="footer">还有疑问？到「我的 → 关于青番」或联系管理员</view>
+  <view class="bottom-space"></view>
+</view>

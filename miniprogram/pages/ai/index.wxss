@@ -1,0 +1,247 @@
+/**pages/ai/index.wxss**/
+page {
+  height: 100%;
+}
+
+.page {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background-color: var(--bg);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  padding: 24rpx 32rpx;
+  background-color: var(--surface);
+  border-bottom: 2rpx solid var(--line);
+}
+
+.back {
+  font-size: 48rpx;
+  color: var(--ink);
+  padding-right: 8rpx;
+}
+
+.ai-badge {
+  width: 64rpx;
+  height: 64rpx;
+  border-radius: 20rpx;
+  background-color: var(--leaf);
+  color: #ffffff;
+  font-family: serif;
+  font-size: 26rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+}
+
+.header-txt {
+  flex: 1;
+  min-width: 0;
+}
+
+.ai-name {
+  font-size: 30rpx;
+  font-weight: 500;
+  color: var(--ink);
+}
+
+.ai-status {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+  font-size: 22rpx;
+  color: var(--leafDeep);
+  margin-top: 4rpx;
+}
+
+.dot {
+  width: 12rpx;
+  height: 12rpx;
+  border-radius: 50%;
+  background-color: var(--leaf);
+}
+
+.clear {
+  font-size: 34rpx;
+  color: var(--ink3);
+  padding-left: 8rpx;
+}
+
+.chat {
+  flex: 1;
+  padding: 24rpx 32rpx 0;
+  box-sizing: border-box;
+}
+
+.msg-item {
+  margin-bottom: 20rpx;
+}
+
+.bubble-row {
+  display: flex;
+  align-items: flex-end;
+}
+
+.bubble-row.left {
+  justify-content: flex-start;
+}
+
+.bubble-row.right {
+  justify-content: flex-end;
+}
+
+.msg-avatar {
+  width: 52rpx;
+  height: 52rpx;
+  border-radius: 16rpx;
+  background-color: var(--leaf);
+  color: #ffffff;
+  font-family: serif;
+  font-size: 22rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  margin-right: 16rpx;
+}
+
+.bubble {
+  max-width: 540rpx;
+  padding: 22rpx 28rpx;
+  font-size: 27rpx;
+  line-height: 42rpx;
+  box-sizing: border-box;
+}
+
+.bubble.ai {
+  background-color: var(--surface);
+  border: 2rpx solid var(--line);
+  border-radius: 28rpx 8rpx 28rpx 28rpx;
+  color: var(--ink);
+}
+
+.bubble.me {
+  background-color: var(--leaf);
+  color: #ffffff;
+  border-radius: 8rpx 28rpx 28rpx 28rpx;
+}
+
+.bubble-text {
+  word-break: break-word;
+  white-space: pre-wrap;
+}
+
+.bubble-action {
+  display: inline-block;
+  margin-top: 14rpx;
+  font-size: 22rpx;
+  color: var(--leafDeep);
+  background-color: var(--leafSoft);
+  padding: 6rpx 18rpx;
+  border-radius: 16rpx;
+}
+
+.thinking {
+  font-size: 25rpx;
+  color: var(--ink3);
+}
+
+.chat-bottom {
+  height: 20rpx;
+}
+
+.suggest-wrap {
+  border-top: 2rpx solid var(--line);
+  padding: 16rpx 0 8rpx;
+  background-color: var(--bg);
+}
+
+.suggest-label {
+  font-size: 22rpx;
+  color: var(--ink3);
+  padding: 0 32rpx 12rpx;
+}
+
+.suggest-scroll {
+  width: 100%;
+  white-space: nowrap;
+}
+
+.suggest-row {
+  display: inline-flex;
+  gap: 16rpx;
+  padding: 0 32rpx;
+}
+
+.suggest {
+  width: 240rpx;
+  padding: 22rpx;
+  background-color: var(--surface);
+  border: 2rpx solid var(--line);
+  border-radius: 24rpx;
+  box-sizing: border-box;
+  white-space: normal;
+}
+
+.suggest-icon {
+  font-size: 34rpx;
+  color: var(--leafDeep);
+}
+
+.suggest-title {
+  font-size: 25rpx;
+  font-weight: 500;
+  color: var(--ink);
+  margin-top: 10rpx;
+}
+
+.suggest-desc {
+  font-size: 21rpx;
+  color: var(--ink3);
+  margin-top: 6rpx;
+  line-height: 30rpx;
+}
+
+.input-row {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  padding: 16rpx 32rpx calc(16rpx + env(safe-area-inset-bottom));
+  background-color: var(--bg);
+}
+
+.chat-input {
+  flex: 1;
+  height: 80rpx;
+  background-color: var(--glass);
+  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(20px);
+  border: 2rpx solid var(--line);
+  border-radius: 198rpx;
+  padding: 0 28rpx;
+  font-size: 27rpx;
+  color: var(--ink);
+  box-sizing: border-box;
+}
+
+.ph {
+  color: var(--ink3);
+}
+
+.send-btn {
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 40rpx;
+  background-color: var(--leaf);
+  color: #ffffff;
+  font-size: 34rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+}

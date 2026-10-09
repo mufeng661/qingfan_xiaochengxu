@@ -6,8 +6,10 @@
   bottom: 0;
   height: 110rpx;
   padding-bottom: env(safe-area-inset-bottom);
-  background-color: rgba(255, 255, 255, 0.96);
-  border-top: 2rpx solid #e3e9db;
+  background-color: var(--glass);
+  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(20px);
+  border-top: 2rpx solid var(--line);
   display: flex;
   z-index: 999;
 }
@@ -29,10 +31,10 @@
 
 .tab-label {
   font-size: 20rpx;
-  color: #b4bfae;
+  color: var(--ink3);
 }
 
 .tab-label.active {
-  color: #4c7a3e;
+  color: var(--leafDeep);
   font-weight: 500;
 }

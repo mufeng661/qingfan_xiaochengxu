@@ -1,5 +1,5 @@
 <!--custom-tab-bar/index.wxml-->
-<view class="tabbar">
+<view class="tabbar theme-{{theme}}">
   <view
     class="tab"
     wx:for="{{list}}"

@@ -1,13 +1,14 @@
 /**pages/home/index.wxss**/
 page {
-  background-color: #f3f6ee;
+  background-color: var(--bg);
 }
 
 .page {
   display: flex;
   flex-direction: column;
-  height: calc(100vh - 110rpx - env(safe-area-inset-bottom));
-  background-color: #f3f6ee;
+  height: 100vh;
+  box-sizing: border-box;
+  background-color: var(--bg);
 }
 
 .header {
@@ -20,13 +21,13 @@ page {
 .date {
   font-family: serif;
   font-size: 26rpx;
-  color: #84917d;
+  color: var(--ink2);
 }
 
 .greet {
   font-family: serif;
   font-size: 52rpx;
-  color: #2c3a28;
+  color: var(--ink);
   margin-top: 8rpx;
 }
 
@@ -37,13 +38,13 @@ page {
   gap: 6rpx;
   padding: 16rpx 28rpx;
   border-radius: 28rpx;
-  background-color: #f6e1d6;
+  background-color: var(--tomatoSoft);
   border: 2rpx solid #f0c9b8;
 }
 
 .sign.done {
-  background-color: #ffffff;
-  border-color: #e3e9db;
+  background-color: var(--surface);
+  border-color: var(--line);
 }
 
 .sign-icon {
@@ -53,19 +54,19 @@ page {
 .sign-text {
   font-size: 22rpx;
   font-weight: 500;
-  color: #e07a5f;
+  color: var(--tomato);
 }
 
 .sign.done .sign-text {
-  color: #b4bfae;
+  color: var(--ink3);
 }
 
 .overview {
   display: flex;
   margin: 0 44rpx;
   padding: 32rpx 0;
-  background-color: #ffffff;
-  border: 2rpx solid #e3e9db;
+  background-color: var(--surface);
+  border: 2rpx solid var(--line);
   border-radius: 36rpx;
 }
 
@@ -77,8 +78,8 @@ page {
 }
 
 .ov-divider {
-  border-right: 2rpx solid #e3e9db;
-  border-left: 2rpx solid #e3e9db;
+  border-right: 2rpx solid var(--line);
+  border-left: 2rpx solid var(--line);
 }
 
 .ov-title {
@@ -86,7 +87,7 @@ page {
   align-items: center;
   gap: 8rpx;
   font-size: 22rpx;
-  color: #84917d;
+  color: var(--ink2);
 }
 
 .ov-icon {
@@ -96,13 +97,13 @@ page {
 .ov-val {
   font-family: serif;
   font-size: 44rpx;
-  color: #2c3a28;
+  color: var(--ink);
   margin-top: 10rpx;
 }
 
 .ov-unit {
   font-size: 24rpx;
-  color: #b4bfae;
+  color: var(--ink3);
 }
 
 .challenge {
@@ -110,8 +111,8 @@ page {
   align-items: center;
   margin: 24rpx 44rpx 0;
   padding: 28rpx 32rpx;
-  background-color: #ffffff;
-  border: 2rpx solid #e3e9db;
+  background-color: var(--surface);
+  border: 2rpx solid var(--line);
   border-radius: 32rpx;
 }
 
@@ -119,7 +120,7 @@ page {
   width: 84rpx;
   height: 84rpx;
   border-radius: 24rpx;
-  background-color: #f4e8ce;
+  background-color: var(--goldSoft);
   font-size: 44rpx;
   display: flex;
   align-items: center;
@@ -136,41 +137,79 @@ page {
 .challenge-title {
   font-size: 27rpx;
   font-weight: 500;
-  color: #2c3a28;
+  color: var(--ink);
 }
 
 .challenge-sub {
   font-size: 22rpx;
-  color: #b4bfae;
+  color: var(--ink3);
   margin-top: 6rpx;
 }
 
 .challenge-sub.done {
-  color: #d9a441;
+  color: var(--gold);
 }
 
 .bar {
   margin-top: 16rpx;
   height: 12rpx;
   border-radius: 198rpx;
-  background-color: #eaf1e2;
+  background-color: var(--surface2);
   overflow: hidden;
 }
 
 .bar-fill {
   height: 12rpx;
   border-radius: 198rpx;
-  background-color: #6e9b57;
+  background-color: var(--leaf);
 }
 
 .bar-fill.gold {
-  background-color: #d9a441;
+  background-color: var(--gold);
 }
 
 .challenge-adjust {
   font-size: 22rpx;
-  color: #84917d;
+  color: var(--ink2);
   padding-left: 16rpx;
+}
+
+.ai-card {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  margin: 20rpx 44rpx 0;
+  padding: 26rpx 32rpx;
+  background-color: var(--leafSoft);
+  border-radius: 32rpx;
+}
+
+.ai-badge-sm {
+  width: 48rpx;
+  height: 48rpx;
+  border-radius: 14rpx;
+  background-color: var(--leaf);
+  color: #ffffff;
+  font-family: serif;
+  font-size: 22rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+}
+
+.ai-card-text {
+  flex: 1;
+  min-width: 0;
+  font-size: 25rpx;
+  line-height: 36rpx;
+  color: var(--ink);
+}
+
+.ai-card-arrow {
+  font-size: 36rpx;
+  color: var(--ink2);
+  flex: none;
 }
 
 .todo-header {
@@ -183,12 +222,12 @@ page {
 .todo-title {
   font-family: serif;
   font-size: 34rpx;
-  color: #2c3a28;
+  color: var(--ink);
 }
 
 .todo-add {
   font-size: 26rpx;
-  color: #4c7a3e;
+  color: var(--leafDeep);
   font-weight: 500;
 }
 
@@ -196,6 +235,7 @@ page {
   flex: 1;
   padding: 0 44rpx;
   box-sizing: border-box;
+  background-color: var(--bg);
 }
 
 .todo-empty {
@@ -211,7 +251,7 @@ page {
 
 .todo-empty-text {
   font-size: 28rpx;
-  color: #84917d;
+  color: var(--ink2);
   margin-top: 24rpx;
 }
 
@@ -225,13 +265,13 @@ page {
   display: flex;
   align-items: center;
   padding: 28rpx 32rpx;
-  background-color: #ffffff;
-  border: 2rpx solid #e3e9db;
+  background-color: var(--surface);
+  border: 2rpx solid var(--line);
   border-radius: 32rpx;
 }
 
 .task.done {
-  background-color: #eaf1e2;
+  background-color: var(--surface2);
   opacity: 0.6;
 }
 
@@ -240,15 +280,15 @@ page {
   width: 48rpx;
   height: 48rpx;
   border-radius: 16rpx;
-  border: 3rpx solid #b4bfae;
+  border: 3rpx solid var(--ink3);
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
 .check.checked {
-  background-color: #6e9b57;
-  border-color: #6e9b57;
+  background-color: var(--leaf);
+  border-color: var(--leaf);
 }
 
 .check-mark {
@@ -272,7 +312,7 @@ page {
 .task-title {
   font-size: 29rpx;
   font-weight: 500;
-  color: #2c3a28;
+  color: var(--ink);
 }
 
 .task.done .task-title {
@@ -287,23 +327,23 @@ page {
 }
 
 .diff-easy {
-  color: #6e9b57;
-  background-color: #dce8cf;
+  color: var(--leaf);
+  background-color: var(--leafSoft);
 }
 
 .diff-medium {
-  color: #d9a441;
-  background-color: #f4e8ce;
+  color: var(--gold);
+  background-color: var(--goldSoft);
 }
 
 .diff-hard {
-  color: #e07a5f;
-  background-color: #f6e1d6;
+  color: var(--tomato);
+  background-color: var(--tomatoSoft);
 }
 
 .task-meta {
   font-size: 23rpx;
-  color: #b4bfae;
+  color: var(--ink3);
   margin-top: 8rpx;
 }
 
@@ -313,7 +353,7 @@ page {
   gap: 8rpx;
   padding: 14rpx 24rpx;
   border-radius: 198rpx;
-  background-color: #6e9b57;
+  background-color: var(--leaf);
   color: #ffffff;
   font-size: 25rpx;
   font-weight: 500;
@@ -322,13 +362,13 @@ page {
 
 .task-del {
   font-size: 24rpx;
-  color: #e07a5f;
+  color: var(--tomato);
   padding: 8rpx 12rpx;
   flex: none;
 }
 
 .bottom-space {
-  height: 40rpx;
+  height: 220rpx;
 }
 
 /* ===== 弹窗 ===== */
@@ -348,7 +388,7 @@ page {
 .modal {
   width: 80%;
   padding: 44rpx;
-  background-color: #ffffff;
+  background-color: var(--surface);
   border-radius: 44rpx;
   box-sizing: border-box;
 }
@@ -362,7 +402,7 @@ page {
 .modal-title {
   font-family: serif;
   font-size: 34rpx;
-  color: #2c3a28;
+  color: var(--ink);
   margin-bottom: 28rpx;
 }
 
@@ -378,27 +418,30 @@ page {
 
 .modal-sub {
   font-size: 24rpx;
-  color: #84917d;
+  color: var(--ink2);
 }
 
 .input {
   height: 92rpx;
-  background-color: #eaf1e2;
+  background-color: var(--glass);
+  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(20px);
+  border: 2rpx solid var(--line);
   border-radius: 24rpx;
   padding: 0 28rpx;
   font-size: 30rpx;
-  color: #2c3a28;
+  color: var(--ink);
   margin-bottom: 20rpx;
   box-sizing: border-box;
 }
 
 .ph {
-  color: #b4bfae;
+  color: var(--ink3);
 }
 
 .label {
   font-size: 24rpx;
-  color: #b4bfae;
+  color: var(--ink3);
   margin-bottom: 12rpx;
 }
 
@@ -411,17 +454,17 @@ page {
 
 .dur {
   font-size: 26rpx;
-  color: #2c3a28;
-  background-color: #eaf1e2;
-  border: 2rpx solid #e3e9db;
+  color: var(--ink);
+  background-color: var(--surface2);
+  border: 2rpx solid var(--line);
   border-radius: 24rpx;
   padding: 14rpx 24rpx;
 }
 
 .dur.active {
   color: #ffffff;
-  background-color: #6e9b57;
-  border-color: #6e9b57;
+  background-color: var(--leaf);
+  border-color: var(--leaf);
 }
 
 .modal-actions {
@@ -440,21 +483,21 @@ page {
 }
 
 .btn-ghost {
-  color: #84917d;
-  border: 2rpx solid #e3e9db;
+  color: var(--ink2);
+  border: 2rpx solid var(--line);
 }
 
 .btn-solid {
   color: #ffffff;
   font-weight: 500;
-  background-color: #6e9b57;
+  background-color: var(--leaf);
 }
 
 .goal-icon {
   width: 96rpx;
   height: 96rpx;
   border-radius: 28rpx;
-  background-color: #f4e8ce;
+  background-color: var(--goldSoft);
   font-size: 52rpx;
   display: flex;
   align-items: center;
@@ -477,13 +520,13 @@ page {
   font-size: 34rpx;
   font-weight: bold;
   border-radius: 28rpx;
-  color: #2c3a28;
-  background-color: #eaf1e2;
-  border: 2rpx solid #e3e9db;
+  color: var(--ink);
+  background-color: var(--surface2);
+  border: 2rpx solid var(--line);
 }
 
 .goal-opt.active {
   color: #ffffff;
-  background-color: #6e9b57;
-  border-color: #6e9b57;
+  background-color: var(--leaf);
+  border-color: var(--leaf);
 }

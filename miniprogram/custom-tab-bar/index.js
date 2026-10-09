@@ -3,6 +3,7 @@ const auth = require("../utils/auth");
 Component({
   data: {
     selected: 0,
+    theme: "green",
     list: [
       { id: "home", label: "今日", icon: "🌿", url: "/pages/home/index" },
       { id: "study", label: "自习室", icon: "👥", url: "/pages/index/index" },

@@ -1,52 +1,184 @@
 <!--pages/me/index.wxml-->
-<view class="page">
-  <view class="profile" wx:if="{{loggedIn}}">
-    <view class="avatar">{{avatarSeed}}</view>
-    <view class="profile-info">
-      <view class="nickname">{{nickname}}</view>
-      <view class="phone">Lv.{{level}} · 连续 {{streak}} 天</view>
+<view class="page theme-{{theme}}">
+  <block wx:if="{{!loggedIn}}">
+    <view class="guest">
+      <view class="guest-brand">
+        <text class="guest-logo">🍅</text>
+        <text class="guest-name">青番</text>
+        <text class="guest-slogan">把专注，种成一片森林</text>
+      </view>
+      <view class="guest-features">
+        <view class="guest-feature"><text class="gf-icon">✅</text><view><view class="gf-title">今日待办 + 专注计时</view><view class="gf-desc">无需登录，直接使用</view></view></view>
+        <view class="guest-feature"><text class="gf-icon">🔒</text><view><view class="gf-title">AI 智能助手</view><view class="gf-desc">登录后解锁</view></view></view>
+        <view class="guest-feature"><text class="gf-icon">🔒</text><view><view class="gf-title">统计数据</view><view class="gf-desc">登录后解锁</view></view></view>
+        <view class="guest-feature"><text class="gf-icon">🔒</text><view><view class="gf-title">自习室</view><view class="gf-desc">登录后解锁</view></view></view>
+      </view>
+      <view class="guest-btn" bindtap="goLogin">登录 / 注册</view>
+      <view class="guest-hint">登录后可同步专注数据、解锁全部功能</view>
+    </view>
+  </block>
+
+  <block wx:else>
+    <view class="profile" bindtap="comingSoon">
+      <view class="avatar-wrap">
+        <view class="avatar">{{avatarSeed}}</view>
+        <view class="lv-badge">Lv.{{level}}</view>
+      </view>
+      <view class="profile-info">
+        <view class="nickname">{{nickname}} <text class="chevron">›</text></view>
+        <view class="bio">{{bio}}</view>
+      </view>
+    </view>
+
+    <view class="card">
+      <view class="card-row">
+        <text class="card-label">经验值</text>
+        <text class="exp-val">{{exp}} <text class="exp-max">/ {{nextLevelExp}}</text></text>
+      </view>
+      <view class="bar"><view class="bar-fill" style="width: {{expPct}}%"></view></view>
+      <view class="hint">再获得 {{expToNext}} 经验升级到 Lv.{{level + 1}}</view>
+    </view>
+
+    <view class="sign-card {{signedToday ? 'done' : ''}}" bindtap="doSign">
+      <view class="sign-icon">🎁</view>
+      <view class="sign-body">
+        <view class="sign-title">{{signedToday ? '今日已签到' : '每日签到'}}</view>
+        <view class="sign-sub">{{signedToday ? '已连续签到 ' + streak + ' 天' : '签到 +' + signGain + ' 经验，连续签到奖励递增'}}</view>
+      </view>
+      <text class="sign-action">{{signedToday ? '✓' : '签到'}}</text>
+    </view>
+
+    <view class="card">
+      <view class="card-row">
+        <view class="forest-head">
+          <text class="card-title">我的森林</text>
+          <text class="forest-level">{{forestLevel}}</text>
+        </view>
+        <text class="hint">已种 {{trees}} 棵 · 枯萎 {{withered}} 棵</text>
+      </view>
+      <view class="forest-grid">
+        <view
+          class="forest-cell {{item.type}}"
+          wx:for="{{forestCells}}"
+          wx:key="idx"
+          data-index="{{index}}"
+          bindtap="revive"
+        >{{item.type === 'tree' ? '🌳' : (item.type === 'withered' ? '🌳' : '+')}}</view>
+      </view>
+      <view class="hint">{{forestHint}}</view>
+    </view>
+
+    <view class="card">
+      <view class="card-row">
+        <text class="card-title">本周打卡</text>
+        <text class="hint">连续 {{streak}} 天 · 明天 +{{streak >= 7 ? 15 : 10}}</text>
+      </view>
+      <view class="week-row">
+        <view class="week-cell" wx:for="{{weekCells}}" wx:key="label">
+          <view class="week-dot {{item.done ? 'done' : (item.isToday ? 'today' : '')}}">{{item.done ? '✓' : item.label}}</view>
+          <text class="week-label">{{item.label}}</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="badge-card">
+      <text class="card-title">我的徽章</text>
+      <view class="badge-row">
+        <view class="badge-item {{item.unlocked ? '' : 'locked'}}" wx:for="{{badges}}" wx:key="id" data-index="{{index}}" bindtap="onBadge">
+          <text class="badge-icon">{{item.icon}}</text>
+          <text class="badge-name">{{item.name}}</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="card total-card">
+      <view class="total-item"><text class="total-val">{{totalFocusHours}} 小时</text><text class="total-label">累计专注</text></view>
+      <view class="total-item total-divider"><text class="total-val">{{totalPomodoros}}</text><text class="total-label">累计番茄</text></view>
+      <view class="total-item"><text class="total-val">{{persistDays}}</text><text class="total-label">坚持天数</text></view>
+    </view>
+
+    <view class="card">
+      <view class="card-row">
+        <text class="card-title">外观主题</text>
+      </view>
+      <view class="theme-row">
+        <view class="theme-item" wx:for="{{themesList}}" wx:key="key" data-key="{{item.key}}" bindtap="pickTheme">
+          <view class="theme-swatch {{themeKey === item.key ? 'on' : ''}}" style="background: {{item.color}}">
+            <text wx:if="{{themeKey === item.key}}" class="theme-check">✓</text>
+          </view>
+          <text class="theme-name {{themeKey === item.key ? 'on' : ''}}">{{item.name}}</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="settings">
+      <view class="setting-item" data-key="account" bindtap="onSetting"><text class="setting-icon">👤</text><view class="setting-body"><view class="setting-title">账号与安全</view><view class="setting-desc">手机号 {{phone}}</view></view><text class="chevron">›</text></view>
+      <view class="setting-item" data-key="notify" bindtap="onSetting"><text class="setting-icon">🔔</text><view class="setting-body"><view class="setting-title">消息提醒</view><view class="setting-desc">专注、签到提醒</view></view><text class="chevron">›</text></view>
+      <view class="setting-item" data-key="privacy" bindtap="onSetting"><text class="setting-icon">🔒</text><view class="setting-body"><view class="setting-title">隐私设置</view><view class="setting-desc">公开时长、在线状态</view></view><text class="chevron">›</text></view>
+      <view class="setting-item" data-key="about" bindtap="onSetting"><text class="setting-icon">🌿</text><view class="setting-body"><view class="setting-title">关于青番</view><view class="setting-desc">v1.0.0 · AI 番茄钟</view></view><text class="chevron">›</text></view>
+      <view class="setting-item" data-key="help" bindtap="goHelp"><text class="setting-icon">❓</text><view class="setting-body"><view class="setting-title">帮助与常见问题</view><view class="setting-desc">使用指南、常见问题</view></view><text class="chevron">›</text></view>
+    </view>
+
+    <view class="logout-btn" bindtap="askLogout"><text>🚪 退出登录</text></view>
+    <view class="bottom-space"></view>
+  </block>
+
+  <!-- 退出 -->
+  <view class="mask" wx:if="{{showLogout}}" bindtap="closeLogout">
+    <view class="modal modal-center" catchtap="noop">
+      <view class="modal-title center">退出登录？</view>
+      <view class="confirm-text">退出后本机专注数据会保留，下次登录即可恢复。</view>
+      <view class="modal-actions">
+        <view class="btn btn-ghost" bindtap="closeLogout">取消</view>
+        <view class="btn btn-tomato" bindtap="doLogout">退出</view>
+      </view>
     </view>
   </view>
 
-  <view class="profile" wx:else>
-    <view class="avatar guest">访</view>
-    <view class="profile-info">
-      <view class="nickname">未登录</view>
-      <view class="phone">登录后保存你的专注数据</view>
-    </view>
-    <view class="login-btn" bindtap="goLogin">去登录</view>
-  </view>
-
-  <view class="level-card" wx:if="{{loggedIn}}">
-    <view class="level-row">
-      <text>等级 Lv.{{level}}</text>
-      <text class="level-exp">{{exp}} / {{nextLevelExp}} 经验</text>
-    </view>
-    <view class="bar">
-      <view class="bar-fill" style="width: {{expPercent}}%"></view>
+  <!-- 徽章 -->
+  <view class="mask" wx:if="{{showBadge}}" bindtap="closeBadge">
+    <view class="modal modal-center" catchtap="noop">
+      <view class="badge-big">{{currentBadge.icon}}</view>
+      <view class="modal-title center">{{currentBadge.name}}</view>
+      <view class="confirm-text">{{currentBadge.desc}}</view>
+      <view class="badge-state {{currentBadge.unlocked ? 'on' : ''}}">{{currentBadge.unlocked ? '已获得' : '未解锁'}}</view>
+      <view class="btn btn-solid full" bindtap="closeBadge">知道了</view>
     </view>
   </view>
 
-  <view class="stats-card">
-    <view class="stat">
-      <view class="stat-val">{{totalMinutes}}</view>
-      <view class="stat-label">累计专注（分钟）</view>
-    </view>
-    <view class="stat">
-      <view class="stat-val">{{pomodoroTotal}}</view>
-      <view class="stat-label">累计番茄</view>
-    </view>
-    <view class="stat">
-      <view class="stat-val">{{streak}}</view>
-      <view class="stat-label">连续（天）</view>
+  <!-- 设置 -->
+  <view class="mask" wx:if="{{showSettings}}" bindtap="closeSettings">
+    <view class="modal" catchtap="noop">
+      <view class="modal-head">
+        <text class="modal-title">{{settingsTitle}}</text>
+        <text class="close-x" bindtap="closeSettings">✕</text>
+      </view>
+
+      <block wx:if="{{settingsKey === 'account'}}">
+        <view class="kv"><text class="kv-k">绑定手机</text><text class="kv-v">{{phone}}</text></view>
+        <view class="kv"><text class="kv-k">昵称</text><text class="kv-v">{{nickname}}</text></view>
+        <view class="hint">✓ 账号已登录，数据云端同步</view>
+      </block>
+
+      <block wx:elif="{{settingsKey === 'notify'}}">
+        <view class="toggle-row"><text class="toggle-label">专注完成提醒</text><switch checked="{{notifyFocus}}" color="#6E9B57" data-key="notifyFocus" bindchange="toggle" /></view>
+        <view class="toggle-row"><text class="toggle-label">每日签到提醒</text><switch checked="{{notifySign}}" color="#6E9B57" data-key="notifySign" bindchange="toggle" /></view>
+        <view class="toggle-row"><text class="toggle-label">好友动态提醒</text><switch checked="{{notifyFriend}}" color="#6E9B57" data-key="notifyFriend" bindchange="toggle" /></view>
+      </block>
+
+      <block wx:elif="{{settingsKey === 'privacy'}}">
+        <view class="toggle-row"><view class="toggle-body"><view class="toggle-label">公开我的专注时长</view><view class="hint">好友可见你的专注记录</view></view><switch checked="{{privacyTime}}" color="#6E9B57" data-key="privacyTime" bindchange="toggle" /></view>
+        <view class="toggle-row"><view class="toggle-body"><view class="toggle-label">展示在线状态</view><view class="hint">自习室中显示我在线</view></view><switch checked="{{privacyOnline}}" color="#6E9B57" data-key="privacyOnline" bindchange="toggle" /></view>
+      </block>
+
+      <block wx:else>
+        <view class="about">
+          <text class="about-logo">🍅</text>
+          <text class="about-name">青番</text>
+          <text class="hint">v1.0.0 · AI 番茄钟智能助手</text>
+          <text class="about-text">把专注，种成一片森林。\n一款会陪你成长的专注工具。</text>
+        </view>
+      </block>
     </view>
   </view>
-
-  <view class="menu">
-    <view class="menu-item" bindtap="comingSoon"><text class="menu-icon">🏅</text><text class="menu-text">我的徽章</text><text class="menu-arrow">›</text></view>
-    <view class="menu-item" bindtap="comingSoon"><text class="menu-icon">🔔</text><text class="menu-text">通知设置</text><text class="menu-arrow">›</text></view>
-    <view class="menu-item" bindtap="comingSoon"><text class="menu-icon">🎨</text><text class="menu-text">主题外观</text><text class="menu-arrow">›</text></view>
-  </view>
-
-  <view class="logout" wx:if="{{loggedIn}}" bindtap="logout">退出登录</view>
 </view>
