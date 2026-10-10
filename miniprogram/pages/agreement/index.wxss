@@ -1,0 +1,82 @@
+/**pages/agreement/index.wxss**/
+page {
+  background-color: #f3f6ee;
+}
+
+.page {
+  min-height: 100vh;
+  box-sizing: border-box;
+  background-color: var(--bg);
+  padding: 0 44rpx 60rpx;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  padding: 32rpx 0 12rpx;
+}
+
+.back {
+  font-size: 48rpx;
+  color: var(--ink);
+  padding-right: 8rpx;
+}
+
+.title {
+  font-family: serif;
+  font-size: 40rpx;
+  color: var(--ink);
+}
+
+.meta {
+  font-size: 22rpx;
+  color: var(--ink3);
+  margin-bottom: 24rpx;
+}
+
+.content {
+  background-color: var(--surface);
+  border: 2rpx solid var(--line);
+  border-radius: 32rpx;
+  padding: 36rpx 32rpx;
+}
+
+.sec {
+  margin-bottom: 28rpx;
+}
+
+.sec:last-child {
+  margin-bottom: 0;
+}
+
+.sec-h {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: var(--ink);
+  margin-bottom: 10rpx;
+}
+
+.sec-p {
+  font-size: 26rpx;
+  line-height: 44rpx;
+  color: var(--ink2);
+  white-space: pre-wrap;
+}
+
+.contact {
+  margin-top: 32rpx;
+  padding-top: 24rpx;
+  border-top: 2rpx solid var(--line);
+  font-size: 24rpx;
+  line-height: 40rpx;
+  color: var(--ink3);
+}
+
+.mail {
+  color: var(--leafDeep);
+}
+
+.bottom-space {
+  height: 40rpx;
+}

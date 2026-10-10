@@ -5,7 +5,7 @@
       <view class="guest-brand">
         <text class="guest-logo">🍅</text>
         <text class="guest-name">青番</text>
-        <text class="guest-slogan">把专注，种成一片森林</text>
+        <text class="guest-slogan">把专注，种成一片番茄园</text>
       </view>
       <view class="guest-features">
         <view class="guest-feature"><text class="gf-icon">✅</text><view><view class="gf-title">今日待办 + 专注计时</view><view class="gf-desc">无需登录，直接使用</view></view></view>
@@ -51,21 +51,24 @@
     <view class="card">
       <view class="card-row">
         <view class="forest-head">
-          <text class="card-title">我的森林</text>
-          <text class="forest-level">{{forestLevel}}</text>
+          <text class="card-title">我的番茄园</text>
+          <text class="forest-level">{{tomatoLevel}}</text>
         </view>
-        <text class="hint">已种 {{trees}} 棵 · 枯萎 {{withered}} 棵</text>
+        <text class="hint">今日 +{{todayPlanted}} 棵 · 进度 {{todayProgress}}/{{tomatoPer}}</text>
       </view>
+      <view class="bar"><view class="bar-fill" style="width: {{tomatoPct}}%"></view></view>
       <view class="forest-grid">
         <view
-          class="forest-cell {{item.type}}"
-          wx:for="{{forestCells}}"
+          class="forest-cell {{item.type}} {{item.fresh ? 'fresh' : ''}}"
+          wx:for="{{tomatoCells}}"
           wx:key="idx"
           data-index="{{index}}"
-          bindtap="revive"
-        >{{item.type === 'tree' ? '🌳' : (item.type === 'withered' ? '🌳' : '+')}}</view>
+          bindtap="clearDead"
+        >{{item.type === 'tomato' ? '🍅' : (item.type === 'dead' ? '🥀' : (item.type === 'more' ? '+' + item.more : ''))}}</view>
       </view>
-      <view class="hint">{{forestHint}}</view>
+      <view class="forest-stats">已种植 {{harvested}} 棵 · 枯萎 {{deadTomatoes}} 棵 · 可用专注番茄 {{focusAvailable}}</view>
+      <view class="hint">{{tomatoHint}}</view>
+      <view class="hint" wx:if="{{deadTomatoes > 0}}">点击枯萎番茄消耗 2 个专注番茄清除</view>
     </view>
 
     <view class="card">
@@ -85,7 +88,7 @@
       <text class="card-title">我的徽章</text>
       <view class="badge-row">
         <view class="badge-item {{item.unlocked ? '' : 'locked'}}" wx:for="{{badges}}" wx:key="id" data-index="{{index}}" bindtap="onBadge">
-          <text class="badge-icon">{{item.icon}}</text>
+          <view class="badge-icon {{item.rarity || 'gold'}}"><text>{{item.icon}}</text></view>
           <text class="badge-name">{{item.name}}</text>
         </view>
       </view>
@@ -115,8 +118,8 @@
       <view class="setting-item" data-key="account" bindtap="onSetting"><text class="setting-icon">👤</text><view class="setting-body"><view class="setting-title">账号与安全</view><view class="setting-desc">手机号 {{phone}}</view></view><text class="chevron">›</text></view>
       <view class="setting-item" data-key="notify" bindtap="onSetting"><text class="setting-icon">🔔</text><view class="setting-body"><view class="setting-title">消息提醒</view><view class="setting-desc">专注、签到提醒</view></view><text class="chevron">›</text></view>
       <view class="setting-item" data-key="privacy" bindtap="onSetting"><text class="setting-icon">🔒</text><view class="setting-body"><view class="setting-title">隐私设置</view><view class="setting-desc">公开时长、在线状态</view></view><text class="chevron">›</text></view>
-      <view class="setting-item" data-key="about" bindtap="onSetting"><text class="setting-icon">🌿</text><view class="setting-body"><view class="setting-title">关于青番</view><view class="setting-desc">v1.0.0 · AI 番茄钟</view></view><text class="chevron">›</text></view>
       <view class="setting-item" data-key="help" bindtap="goHelp"><text class="setting-icon">❓</text><view class="setting-body"><view class="setting-title">帮助与常见问题</view><view class="setting-desc">使用指南、常见问题</view></view><text class="chevron">›</text></view>
+      <view class="setting-item" bindtap="goAbout"><text class="setting-icon">🌿</text><view class="setting-body"><view class="setting-title">关于我们</view><view class="setting-desc">意见反馈 · 用户协议 · 隐私政策</view></view><text class="chevron">›</text></view>
     </view>
 
     <view class="logout-btn" bindtap="askLogout"><text>🚪 退出登录</text></view>
@@ -137,12 +140,24 @@
 
   <!-- 徽章 -->
   <view class="mask" wx:if="{{showBadge}}" bindtap="closeBadge">
-    <view class="modal modal-center" catchtap="noop">
-      <view class="badge-big">{{currentBadge.icon}}</view>
-      <view class="modal-title center">{{currentBadge.name}}</view>
+    <view class="modal modal-center badge-modal" catchtap="noop">
+      <view class="badge-wall-title">成就徽章墙</view>
+      <canvas
+        type="2d"
+        id="badgeCanvas"
+        class="badge-canvas"
+        catchtouchstart="onBadgeTouchStart"
+        catchtouchmove="onBadgeTouchMove"
+        catchtouchend="onBadgeTouchEnd"
+      ></canvas>
+      <view class="badge-name-big">
+        {{currentBadge.name}}
+        <text class="badge-rarity r-{{currentBadge.rarity}}">{{currentBadge.rarityName}}</text>
+      </view>
       <view class="confirm-text">{{currentBadge.desc}}</view>
       <view class="badge-state {{currentBadge.unlocked ? 'on' : ''}}">{{currentBadge.unlocked ? '已获得' : '未解锁'}}</view>
-      <view class="btn btn-solid full" bindtap="closeBadge">知道了</view>
+      <view class="coin-hint">左右滑动徽章可转动检视</view>
+      <view class="btn btn-solid full" catchtap="closeBadge">知道了</view>
     </view>
   </view>
 
@@ -176,7 +191,7 @@
           <text class="about-logo">🍅</text>
           <text class="about-name">青番</text>
           <text class="hint">v1.0.0 · AI 番茄钟智能助手</text>
-          <text class="about-text">把专注，种成一片森林。\n一款会陪你成长的专注工具。</text>
+          <text class="about-text">把专注，种成一片番茄园。\n一款会陪你成长的专注工具。</text>
         </view>
       </block>
     </view>

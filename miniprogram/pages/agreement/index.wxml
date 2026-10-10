@@ -1,0 +1,20 @@
+<!--pages/agreement/index.wxml-->
+<view class="page theme-{{theme}}">
+  <view class="header">
+    <text class="back" bindtap="goBack">‹</text>
+    <text class="title">{{title}}</text>
+  </view>
+
+  <view class="meta">生效日期：{{updated}}</view>
+
+  <view class="content">
+    <view class="sec" wx:for="{{sections}}" wx:key="h">
+      <view class="sec-h">{{item.h}}</view>
+      <view class="sec-p">{{item.p}}</view>
+    </view>
+
+    <view class="contact">如对本{{title === '隐私政策' ? '政策' : '协议'}}有疑问，请联系 <text class="mail" bindtap="copyEmail">{{supportEmail}}</text>（点击复制）。</view>
+  </view>
+
+  <view class="bottom-space"></view>
+</view>

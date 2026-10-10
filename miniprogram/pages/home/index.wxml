@@ -51,15 +51,27 @@
     <view class="todo-add" bindtap="openAdd">＋ 添加</view>
   </view>
 
-  <scroll-view class="todo-scroll" scroll-y>
+  <scroll-view class="todo-scroll" scroll-y="{{!dragging}}" scroll-top="{{scrollTop}}">
     <view class="todo-empty" wx:if="{{tasks.length === 0}}">
       <text class="todo-empty-icon">📝</text>
       <text class="todo-empty-text">今天还没有待办</text>
     </view>
 
     <view class="todo-list" wx:else>
-      <view class="task {{item.done ? 'done' : ''}}" wx:for="{{tasks}}" wx:key="id">
-        <view class="check {{item.done ? 'checked' : ''}}" data-id="{{item.id}}" bindtap="toggleTask">
+      <view class="drag-line" wx:if="{{dragging}}" style="top: {{insertIndex * rowH}}px;"></view>
+      <view
+        class="task {{item.done ? 'done' : ''}} {{dragId === item.id ? 'dragging' : ''}}"
+        wx:for="{{tasks}}"
+        wx:key="id"
+        data-index="{{index}}"
+        data-id="{{item.id}}"
+        style="height: {{cardH}}px; margin-bottom: {{gap}}px; {{item._style}}"
+        bindlongpress="onTaskLongPress"
+        bindtouchmove="onTaskTouchMove"
+        bindtouchend="onTaskTouchEnd"
+        bindtouchcancel="onTaskTouchEnd"
+      >
+        <view class="check {{item.done ? 'checked' : ''}}" data-id="{{item.id}}" catchtap="toggleTask">
           <text wx:if="{{item.done}}" class="check-mark">✓</text>
         </view>
         <view class="task-body">
@@ -69,10 +81,10 @@
           </view>
           <view class="task-meta">🍅 {{item.pomodoros}} 个番茄 · {{item.durationMin}} 分钟</view>
         </view>
-        <view class="task-start" wx:if="{{!item.done}}" data-id="{{item.id}}" bindtap="startFocus">
+        <view class="task-start" wx:if="{{!item.done}}" data-id="{{item.id}}" catchtap="startFocus">
           <text>▶</text><text>开始</text>
         </view>
-        <view class="task-del" wx:if="{{item.done}}" data-id="{{item.id}}" bindtap="deleteTask">删除</view>
+        <view class="task-del" data-id="{{item.id}}" catchtap="deleteTask">✕</view>
       </view>
     </view>
     <view class="bottom-space"></view>

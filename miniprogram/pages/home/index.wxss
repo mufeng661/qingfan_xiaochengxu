@@ -258,16 +258,41 @@ page {
 .todo-list {
   display: flex;
   flex-direction: column;
-  gap: 20rpx;
+  position: relative;
+}
+
+.drag-line {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 6rpx;
+  background-color: var(--leaf);
+  border-radius: 6rpx;
+  box-shadow: 0 0 12rpx rgba(110, 155, 87, 0.6);
+  z-index: 30;
+}
+
+.task.dragging {
+  box-shadow: 0 16rpx 40rpx rgba(44, 58, 40, 0.22);
+  opacity: 0.96;
+  z-index: 5;
+  transition: none;
+}
+
+.todo-area {
+  width: 100%;
 }
 
 .task {
   display: flex;
   align-items: center;
-  padding: 28rpx 32rpx;
+  padding: 0 32rpx;
+  box-sizing: border-box;
   background-color: var(--surface);
   border: 2rpx solid var(--line);
   border-radius: 32rpx;
+  overflow: hidden;
+  transition: transform 0.2s ease;
 }
 
 .task.done {
@@ -307,12 +332,18 @@ page {
   display: flex;
   align-items: center;
   gap: 12rpx;
+  min-width: 0;
 }
 
 .task-title {
+  flex: 1;
+  min-width: 0;
   font-size: 29rpx;
   font-weight: 500;
   color: var(--ink);
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 .task.done .task-title {

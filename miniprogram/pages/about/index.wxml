@@ -1,0 +1,40 @@
+<!--pages/about/index.wxml-->
+<view class="page theme-{{theme}}">
+  <view class="header">
+    <text class="back" bindtap="goBack">‹</text>
+    <text class="title">关于我们</text>
+  </view>
+
+  <view class="brand">
+    <text class="logo">🍅</text>
+    <text class="brand-name">青番</text>
+    <text class="brand-slogan">把专注，种成一片番茄园</text>
+    <text class="brand-ver" bindtap="copyVersion">版本 {{version}}</text>
+  </view>
+
+  <view class="menu">
+    <view class="menu-item" bindtap="openFeedback">
+      <text class="menu-icon">💬</text>
+      <view class="menu-body"><view class="menu-title">意见反馈</view><view class="menu-desc">提交建议或问题</view></view>
+      <text class="chevron">›</text>
+    </view>
+    <view class="menu-item" bindtap="openAgreement">
+      <text class="menu-icon">📄</text>
+      <view class="menu-body"><view class="menu-title">用户协议</view><view class="menu-desc">使用条款与服务说明</view></view>
+      <text class="chevron">›</text>
+    </view>
+    <view class="menu-item" bindtap="openPrivacy">
+      <text class="menu-icon">🔒</text>
+      <view class="menu-body"><view class="menu-title">隐私政策</view><view class="menu-desc">我们如何收集与保护信息</view></view>
+      <text class="chevron">›</text>
+    </view>
+    <view class="menu-item" bindtap="copyEmail">
+      <text class="menu-icon">✉️</text>
+      <view class="menu-body"><view class="menu-title">联系邮箱</view><view class="menu-desc">{{supportEmail}}</view></view>
+      <text class="copy">复制</text>
+    </view>
+  </view>
+
+  <view class="footer">© 2026 青番团队 · 保留所有权利</view>
+  <view class="bottom-space"></view>
+</view>

@@ -1,0 +1,137 @@
+/**pages/about/index.wxss**/
+page {
+  background-color: #f3f6ee;
+}
+
+.page {
+  min-height: 100vh;
+  box-sizing: border-box;
+  background-color: var(--bg);
+  padding-bottom: 60rpx;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  padding: 32rpx 44rpx 20rpx;
+}
+
+.back {
+  font-size: 48rpx;
+  color: var(--ink);
+  padding-right: 8rpx;
+}
+
+.title {
+  font-family: serif;
+  font-size: 40rpx;
+  color: var(--ink);
+}
+
+.brand {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 40rpx 0 48rpx;
+}
+
+.logo {
+  font-size: 128rpx;
+}
+
+.brand-name {
+  font-family: serif;
+  font-size: 52rpx;
+  color: var(--ink);
+  margin-top: 16rpx;
+  letter-spacing: 4rpx;
+}
+
+.brand-slogan {
+  font-size: 26rpx;
+  color: var(--ink2);
+  margin-top: 14rpx;
+}
+
+.brand-ver {
+  font-size: 24rpx;
+  color: var(--ink3);
+  margin-top: 14rpx;
+  padding: 6rpx 20rpx;
+  border-radius: 198rpx;
+  background-color: var(--surface2);
+}
+
+.menu {
+  margin: 0 44rpx;
+  background-color: var(--surface);
+  border: 2rpx solid var(--line);
+  border-radius: 36rpx;
+  padding: 0 32rpx;
+}
+
+.menu-item {
+  display: flex;
+  align-items: center;
+  gap: 22rpx;
+  padding: 30rpx 0;
+  border-bottom: 2rpx solid var(--line);
+}
+
+.menu-item:last-child {
+  border-bottom: none;
+}
+
+.menu-icon {
+  width: 64rpx;
+  height: 64rpx;
+  border-radius: 20rpx;
+  background-color: var(--leafSoft);
+  font-size: 34rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+}
+
+.menu-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.menu-title {
+  font-size: 28rpx;
+  font-weight: 500;
+  color: var(--ink);
+}
+
+.menu-desc {
+  font-size: 22rpx;
+  color: var(--ink3);
+  margin-top: 4rpx;
+}
+
+.chevron {
+  font-size: 36rpx;
+  color: var(--ink3);
+}
+
+.copy {
+  font-size: 24rpx;
+  color: var(--leafDeep);
+  background-color: var(--leafSoft);
+  border-radius: 16rpx;
+  padding: 6rpx 18rpx;
+}
+
+.footer {
+  text-align: center;
+  font-size: 22rpx;
+  color: var(--ink3);
+  margin-top: 48rpx;
+}
+
+.bottom-space {
+  height: 40rpx;
+}

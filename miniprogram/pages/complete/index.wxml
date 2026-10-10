@@ -16,7 +16,7 @@
     <view class="rewards">
       <view class="reward"><text class="reward-icon" style="color:#E07A5F">🔥</text><text>番茄 +1</text></view>
       <view class="reward"><text class="reward-icon" style="color:#D9A441">⭐</text><text>经验 +{{exp}}</text></view>
-      <view class="reward"><text class="reward-icon" style="color:#4C7A3E">🌳</text><text>种下 1 棵树</text></view>
+      <view class="reward"><text class="reward-icon" style="color:#E07A5F">🍅</text><text>{{justHarvested ? '种植 1 棵番茄！' : '番茄成长 ' + tomatoProgress + '/10'}}</text></view>
     </view>
 
     <view class="btn" bindtap="goHome">太棒了</view>

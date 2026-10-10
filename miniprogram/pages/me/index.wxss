@@ -286,7 +286,7 @@ page {
   color: var(--ink3);
 }
 
-/* ===== 森林 ===== */
+/* ===== 番茄园 ===== */
 .forest-head {
   display: flex;
   align-items: center;
@@ -296,8 +296,8 @@ page {
 .forest-level {
   font-size: 22rpx;
   font-weight: 500;
-  color: var(--leaf);
-  background-color: var(--leafSoft);
+  color: var(--tomato);
+  background-color: var(--tomatoSoft);
   border-radius: 198rpx;
   padding: 4rpx 18rpx;
 }
@@ -305,34 +305,63 @@ page {
 .forest-grid {
   display: flex;
   flex-wrap: wrap;
-  gap: 16rpx;
-  margin-bottom: 16rpx;
+  gap: 12rpx;
+  margin: 12rpx 0 16rpx;
+  padding: 20rpx;
+  border-radius: 28rpx;
+  background-color: var(--surface2);
+  box-shadow: inset 0 4rpx 16rpx rgba(0, 0, 0, 0.05);
 }
 
 .forest-cell {
-  width: calc((100% - 48rpx) / 4);
-  height: 88rpx;
-  border-radius: 24rpx;
+  width: calc((100% - 36rpx) / 4);
+  height: 84rpx;
+  border-radius: 20rpx;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 44rpx;
+  font-size: 42rpx;
+  line-height: 1;
   box-sizing: border-box;
 }
 
-.forest-cell.tree {
-  background-color: var(--leafSoft);
+.forest-cell.tomato {
+  background-color: var(--surface);
+  box-shadow: 0 2rpx 0 rgba(0, 0, 0, 0.06);
 }
 
-.forest-cell.withered {
-  background-color: var(--surface2);
-  opacity: 0.75;
+.forest-cell.tomato.fresh {
+  animation: tomato-pop 0.5s cubic-bezier(0.2, 1.3, 0.4, 1) both;
+}
+
+.forest-cell.dead {
+  background-color: var(--surface);
+  font-size: 38rpx;
+  filter: grayscale(1);
+  opacity: 0.6;
 }
 
 .forest-cell.empty {
   border: 3rpx dashed var(--line);
+}
+
+.forest-cell.more {
+  background-color: var(--tomatoSoft);
+  color: var(--tomato);
+  font-size: 28rpx;
+  font-weight: 700;
+}
+
+.forest-stats {
+  font-size: 24rpx;
   color: var(--ink3);
-  font-size: 34rpx;
+  margin-bottom: 8rpx;
+}
+
+@keyframes tomato-pop {
+  0% { transform: scale(0.2); opacity: 0; }
+  60% { transform: scale(1.15); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
 }
 
 /* ===== 本周 ===== */
@@ -405,10 +434,6 @@ page {
 
 .badge-item.locked {
   opacity: 0.6;
-}
-
-.badge-icon {
-  font-size: 48rpx;
 }
 
 .badge-name {
@@ -635,6 +660,196 @@ page {
 .badge-state.on {
   background-color: var(--leafSoft);
   color: var(--leafDeep);
+}
+
+/* ===== 3D 徽章 ===== */
+.badge-canvas {
+  width: 360rpx;
+  height: 360rpx;
+  display: block;
+  margin: 0 auto;
+}
+
+/* 成就徽章墙弹窗（浅色面板 + 顶部聚光灯） */
+.badge-modal {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(180deg, #eaf1fa 0%, #f7faff 32%, #ffffff 62%, #f2f6fc 100%);
+}
+
+.badge-modal::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 360rpx;
+  pointer-events: none;
+  background:
+    radial-gradient(46% 100% at 50% 0%, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0) 72%),
+    radial-gradient(30% 86% at 16% 0%, rgba(255, 255, 255, 0.65), rgba(255, 255, 255, 0) 72%),
+    radial-gradient(30% 86% at 84% 0%, rgba(255, 255, 255, 0.65), rgba(255, 255, 255, 0) 72%);
+}
+
+.badge-wall-title {
+  position: relative;
+  font-size: 34rpx;
+  font-weight: 600;
+  color: #2c3340;
+  letter-spacing: 4rpx;
+  margin-bottom: 8rpx;
+}
+
+.badge-name-big {
+  position: relative;
+  font-size: 32rpx;
+  color: #3a4150;
+  font-weight: 500;
+  margin-top: 8rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14rpx;
+}
+
+.badge-rarity {
+  font-size: 20rpx;
+  font-weight: 400;
+  padding: 4rpx 16rpx;
+  border-radius: 999rpx;
+  line-height: 1.4;
+}
+
+.badge-rarity.r-stone { background: #e7eae5; color: #77836f; }
+.badge-rarity.r-bronze { background: #f3e2d3; color: #8a5524; }
+.badge-rarity.r-silver { background: #e4eaf0; color: #5c6a78; }
+.badge-rarity.r-gold { background: #f7ecc9; color: #9a6d0a; }
+.badge-rarity.r-diamond { background: #d9f1f8; color: #1f6a86; }
+
+.badge-modal .confirm-text,
+.badge-modal .badge-state,
+.badge-modal .btn-solid {
+  position: relative;
+}
+
+/* 徽章列表：金属硬币样式，按稀有度区分材质 */
+.badge-icon {
+  width: 96rpx;
+  height: 96rpx;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 28%, #fff8e0, #f3d271 45%, #d9a441 62%, #8a5c12);
+  color: #5a3d0e;
+  font-size: 44rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: inset 0 -6rpx 14rpx rgba(0, 0, 0, 0.22), inset 0 6rpx 10rpx rgba(255, 255, 255, 0.5), 0 8rpx 16rpx rgba(0, 0, 0, 0.15);
+}
+
+.badge-icon.bronze {
+  background: radial-gradient(circle at 35% 28%, #ffe6cf, #e8b48a 45%, #b5793f 62%, #6e4418);
+  color: #5a3312;
+}
+
+.badge-icon.silver {
+  background: radial-gradient(circle at 35% 28%, #ffffff, #e8edf2 45%, #b9c2cc 62%, #6e7a86);
+  color: #45505c;
+}
+
+.badge-icon.diamond {
+  background: radial-gradient(circle at 35% 28%, #f4feff, #bfeef7 45%, #7fd4e8 62%, #3a8fb0);
+  color: #1f5a70;
+}
+
+.badge-item.locked .badge-icon {
+  background: linear-gradient(135deg, #dfe3de, #b4bfae);
+  color: #ffffff;
+  box-shadow: inset 0 -6rpx 14rpx rgba(0, 0, 0, 0.12), 0 6rpx 12rpx rgba(0, 0, 0, 0.08);
+}
+
+.stage {
+  width: 100%;
+  height: 300rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  perspective: 900rpx;
+}
+
+.coin {
+  position: relative;
+  width: 240rpx;
+  height: 240rpx;
+  transform-style: preserve-3d;
+}
+
+.coin.spinning {
+  animation: coinSpin 4s linear infinite;
+}
+
+@keyframes coinSpin {
+  from {
+    transform: rotateY(0deg);
+  }
+  to {
+    transform: rotateY(360deg);
+  }
+}
+
+.coin-face {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 240rpx;
+  height: 240rpx;
+  border-radius: 50%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+.coin-face.front {
+  background: radial-gradient(circle at 35% 28%, #ffeec2, #d9a441 55%, #a9791f);
+  border: 10rpx solid #f6e6bd;
+  box-shadow: inset 0 -10rpx 24rpx rgba(120, 80, 10, 0.35), inset 0 10rpx 18rpx rgba(255, 255, 255, 0.6), 0 16rpx 30rpx rgba(0, 0, 0, 0.22);
+  color: #5a3d0e;
+}
+
+.coin-face.back {
+  transform: rotateY(180deg);
+  background: radial-gradient(circle at 65% 28%, #ffe6a8, #c8901f 55%, #8f6517);
+  border: 10rpx solid #f0dca6;
+  box-shadow: inset 0 -10rpx 24rpx rgba(120, 80, 10, 0.35), 0 16rpx 30rpx rgba(0, 0, 0, 0.22);
+  color: #5a3d0e;
+}
+
+.coin-icon {
+  font-size: 88rpx;
+  line-height: 1;
+}
+
+.coin-name {
+  font-size: 24rpx;
+  font-weight: 600;
+  margin-top: 12rpx;
+  letter-spacing: 2rpx;
+}
+
+.coin-back {
+  font-family: serif;
+  font-size: 48rpx;
+  font-weight: bold;
+  letter-spacing: 6rpx;
+}
+
+.coin-hint {
+  font-size: 22rpx;
+  color: var(--ink3);
+  margin-top: 16rpx;
 }
 
 .kv {

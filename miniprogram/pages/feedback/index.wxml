@@ -1,0 +1,33 @@
+<!--pages/feedback/index.wxml-->
+<view class="page theme-{{theme}}">
+  <view class="header">
+    <text class="back" bindtap="goBack">‹</text>
+    <text class="title">意见反馈</text>
+  </view>
+
+  <view class="card">
+    <view class="label">反馈内容</view>
+    <textarea
+      class="textarea"
+      placeholder="请描述你遇到的问题或建议…"
+      placeholder-class="ph"
+      value="{{content}}"
+      bindinput="onContentInput"
+      maxlength="500"
+      auto-height
+    />
+    <view class="count">{{content.length}}/500</view>
+
+    <view class="label">联系方式（选填）</view>
+    <input class="input" placeholder="手机号 / 微信 / 邮箱" placeholder-class="ph" value="{{contact}}" bindinput="onContactInput" maxlength="50" />
+
+    <view class="submit {{submitting ? 'disabled' : ''}}" bindtap="submit">{{submitting ? '提交中…' : '提交反馈'}}</view>
+
+    <view class="tip">
+      我们会认真阅读每一条反馈。也可直接发送邮件至
+      <text class="mail" bindtap="copyEmail">{{supportEmail}}</text>
+    </view>
+  </view>
+
+  <view class="bottom-space"></view>
+</view>

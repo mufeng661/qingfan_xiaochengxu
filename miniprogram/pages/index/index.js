@@ -1,5 +1,6 @@
 const { call } = require("../../utils/api");
 const auth = require("../../utils/auth");
+const state = require("../../utils/state");
 
 function fmt(ts) {
   const d = new Date(Number(ts));
@@ -122,11 +123,17 @@ Page({
             my_rank: detail.my_rank != null ? detail.my_rank : myIdx >= 0 ? myIdx + 1 : 1,
           });
           this.setData({ room: merged, members, loading: false });
+          if (merged.my_rank === 1) this.recordChampion();
         });
       })
       .catch(() => {
         this.setData({ loading: false, roomError: "自习室加载失败，请检查网络后重试" });
       });
+  },
+
+  // 月度冠军：当月自习室排名第 1 时记录一次（每月只计 1 次），写入账号资料随云端同步
+  recordChampion() {
+    state.recordChampion();
   },
 
   // 记录当前用户手机号用于成员高亮

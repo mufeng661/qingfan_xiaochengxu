@@ -53,7 +53,7 @@ async function register(params) {
         password_hash: hashed.hash,
         password_salt: hashed.salt,
         avatar_seed: username.slice(0, 1),
-        bio: "把专注，种成一片森林",
+        bio: "把专注，种成一片番茄园",
         created_at: timestamp,
         updated_at: timestamp,
       },
@@ -64,7 +64,7 @@ async function register(params) {
   const row =
     insert.data && insert.data[0]
       ? insert.data[0]
-      : { id: 0, phone, username, avatar_seed: username.slice(0, 1), bio: "把专注，种成一片森林", created_at: timestamp };
+      : { id: 0, phone, username, avatar_seed: username.slice(0, 1), bio: "把专注，种成一片番茄园", created_at: timestamp };
 
   return ok({ token: signToken(phone), user: publicUser(row) });
 }
